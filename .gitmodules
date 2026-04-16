@@ -1,0 +1,9 @@
+[submodule "external/mbuild"]
+	path = external/mbuild
+	url = https://github.com/intelxed/mbuild.git
+[submodule "external/xed"]
+	path = external/xed
+	url = https://github.com/intelxed/xed.git
+[submodule "external/remill"]
+	path = external/remill
+	url = https://github.com/lifting-bits/remill.git
