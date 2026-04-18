@@ -1,81 +1,28 @@
-# Counting x86-64 Instruction Variants
+# Counting x86-64 Iforms
 
-This repository uses Intel XED to obtain the number of x86-64 instruction forms ("iforms").
-
-## Clone the repository
-
-Clone with submodules so `external/mbuild`, `external/xed`, and `external/remill` are present immediately:
+Clone with submodules:
 
 ```sh
 git clone --recurse-submodules <repo-url>
 cd translator-coverage-study
 ```
 
-If you already cloned without submodules, initialize them from the repository root:
-
-```sh
-git submodule update --init --recursive
-```
-
-## Prerequisites
-
-Use the Nix dev shell from the repository root so `python3` and the native build tools are available:
+Run from the repo root:
 
 ```sh
 nix develop
+python3 scripts/count_xed_instructions.py
+python3 scripts/calculate_remill_coverage.py
 ```
 
-## Build the XED kit
-
-From the repository root:
-
-```sh
-cd external/xed
-./mfile.py install
-cd ../..
-```
-
-This creates a kit directory under `external/xed/kits/` with a name like:
+Current output:
 
 ```text
-external/xed/kits/xed-install-base-2026-04-16-lin-x86-64
+2020-03: 6135 x86-64 iforms
+2026: 8465 x86-64 iforms
+
+2020-03: 1635 / 6135 x86-64 iforms covered (26.65%)
+2026: 1919 / 8465 x86-64 iforms covered (22.67%)
 ```
 
-## Count instruction variants
-
-Run the counting script from the repository root:
-
-```sh
-python3 scripts/count_xed_iforms.py
-```
-
-The script:
-
-- finds every `xed-install-base-*` directory under `external/xed/kits/`
-- reads the generated `include/xed/xed-iform-enum.h` header in each kit
-- counts the non-invalid XED iform entries
-- reports the count for each discovered kit
-
-You can also run it in one command without manually entering the dev shell:
-
-```sh
-nix develop --command python3 scripts/count_xed_iforms.py
-```
-
-## Expected result
-
-On the current XED kit in this repository, the script reports:
-
-```text
-8863 iforms
-```
-
-## Notes
-
-- `./mfile.py install` must be run before the script, because the script reads the generated installed kit headers.
-- If multiple `xed-install-base-*` directories exist, the script reports all of them.
-- To scan a different kits directory, use:
-
-```sh
-python3 scripts/count_xed_iforms.py --kits-root /path/to/kits
-```
+`count_xed_instructions.py` gets distinct iforms from `external/XED-to-XML` for the March 2020 snapshot and the current snapshot. `calculate_remill_coverage.py` extracts Remill `ISEL_*` forms directly from `external/remill` and `external/remill_2020`, normalizes them to XED-to-XML iform names, and reports coverage.
