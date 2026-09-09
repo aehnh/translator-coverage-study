@@ -6,7 +6,12 @@ import argparse
 import re
 from pathlib import Path
 
-from count_asl_instructions import load_a64_variants
+from count_asl_instructions import (
+    available_releases,
+    extract_a64_variants,
+    load_a64_variants,
+    resolve_decode_file,
+)
 
 
 DEFAULT_ARCH_ROOTS = {
@@ -134,29 +139,81 @@ def normalize_to_asl_variants(raw_variants: list[str], asl_variants: set[str]) -
     return matched, sorted(unmatched)
 
 
-def coverage_summary(snapshot_name: str) -> dict[str, object]:
-    arch_root = repo_root() / DEFAULT_ARCH_ROOTS[snapshot_name]
+def coverage_against(asl_variants: set[str], arch_root: Path) -> dict[str, object]:
+    """Remill A64 coverage of an arbitrary ASL variant set.
+
+    `asl_variants` is the set of A64 encoding names from one ARM release;
+    `arch_root` is a Remill AArch64 source tree.  Names are lower-cased before
+    matching, exactly as the original two-snapshot script did.
+    """
     raw_variants = extract_remill_a64_variants(arch_root)
-    asl_variants = {name.lower() for name in load_a64_variants(snapshot_name)}
-    matched, unmatched = normalize_to_asl_variants(raw_variants, asl_variants)
+    lowered = {name.lower() for name in asl_variants}
+    matched, unmatched = normalize_to_asl_variants(raw_variants, lowered)
     supported_variants = set(matched.values())
 
     return {
-        "snapshot": snapshot_name,
         "raw_remill_variants": len(raw_variants),
         "matched_raw_variants": len(matched),
         "unmatched_raw_variants": len(unmatched),
         "supported_variants": len(supported_variants),
-        "total_variants": len(asl_variants),
-        "coverage_percent": (len(supported_variants) / len(asl_variants)) * 100.0 if asl_variants else 0.0,
+        "total_variants": len(lowered),
+        "coverage_percent": (len(supported_variants) / len(lowered)) * 100.0 if lowered else 0.0,
     }
+
+
+def coverage_summary(snapshot_name: str) -> dict[str, object]:
+    arch_root = repo_root() / DEFAULT_ARCH_ROOTS[snapshot_name]
+    summary = coverage_against(load_a64_variants(snapshot_name), arch_root)
+    summary["snapshot"] = snapshot_name
+    return summary
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Calculate Remill A64 coverage against ASL instruction variants."
+    )
+    parser.add_argument(
+        "--snapshot",
+        choices=tuple(DEFAULT_ARCH_ROOTS),
+        action="append",
+        help="Limit output to one or more named snapshots. Defaults to both.",
+    )
+    parser.add_argument(
+        "--release",
+        action="append",
+        help="ARM release label (YYYY-MM) from specs/a64/. May be repeated.",
+    )
+    parser.add_argument(
+        "--all-releases",
+        action="store_true",
+        help="Report coverage for every release under specs/a64/.",
+    )
+    parser.add_argument(
+        "--remill-arch-root",
+        default=None,
+        help="Remill AArch64 source root to measure. Defaults to external/remill (latest).",
+    )
+    return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    snapshots = args.snapshot or ["2020-03", "2026"]
 
-    for snapshot_name in snapshots:
+    releases = args.release or (available_releases() if args.all_releases else None)
+    if releases:
+        arch_root = Path(args.remill_arch_root) if args.remill_arch_root else (
+            repo_root() / DEFAULT_ARCH_ROOTS["2026"]
+        )
+        for release in releases:
+            variants = extract_a64_variants(resolve_decode_file(release))
+            s = coverage_against(variants, arch_root)
+            print(
+                f"{release}: {s['supported_variants']} / {s['total_variants']} "
+                f"A64 instruction variants covered ({s['coverage_percent']:.2f}%)"
+            )
+        return 0
+
+    for snapshot_name in args.snapshot or ["2020-03", "2026"]:
         summary = coverage_summary(snapshot_name)
         print(
             f"{summary['snapshot']}: {summary['supported_variants']} / {summary['total_variants']} "

@@ -1,0 +1,20 @@
+Some Arm A64 ISA XML releases (observed: 2020-09) ship alias iclasses whose
+<ps_section> carries no <ps> element, e.g. asr_asrv.xml, cmn_adds_addsub_shift.xml,
+bfc_bfm.xml.  mra_tools' readASL() dereferences the missing element and aborts the
+whole run.  Alias iclasses contribute no entry to the counted __encoding set (the A64
+name comes from encoding/@psname, not from the decode pseudocode), so substituting an
+empty decode body is inert for instruction counting; it is verified inert by
+regenerating releases that do not need the patch and diffing the variant sets.
+
+--- a/bin/instrs2asl.py
++++ b/bin/instrs2asl.py
+@@
+-        dec_asl = readASL(iclass.find('ps_section/ps'))
++        _ps = iclass.find('ps_section/ps')
++        if _ps is None:
++            # alias iclass with no decode pseudocode (see patches/mra_tools-missing-ps.patch)
++            dec_asl = ASL(encoding.attrib.get('psname', exec.name) + ':decode', "", set(), set())
++        else:
++            dec_asl = readASL(_ps)
+         if decode: dec_asl.code = decode +"\n"+ dec_asl.code
+         dec_asl.patchDependencies(names)

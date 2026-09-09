@@ -10,7 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from count_xed_instructions import load_instruction_iforms
+from count_xed_instructions import load_iforms_at_commit, load_instruction_iforms
 
 
 DEFAULT_RUNTIME_CPP = {
@@ -85,6 +85,16 @@ def parse_args() -> argparse.Namespace:
         "--cxx",
         default=os.environ.get("CXX", "c++"),
         help="C++ compiler/preprocessor command to use.",
+    )
+    parser.add_argument(
+        "--commit",
+        action="append",
+        help="Measure coverage against the iform set at an arbitrary XED-to-XML commit.",
+    )
+    parser.add_argument(
+        "--remill-runtime",
+        default=None,
+        help="Remill X86 Runtime/Instructions.cpp to measure. Defaults to external/remill (latest).",
     )
     parser.add_argument(
         "--show-command",
@@ -234,19 +244,30 @@ def normalize_to_xed_to_xml_iforms(raw_iforms: list[str], xed_iforms: set[str]) 
     return matched, sorted(unmatched)
 
 
-def coverage_summary(snapshot_name: str, cxx: str, show_command: bool) -> dict[str, object]:
-    runtime_cpp = repo_root() / DEFAULT_RUNTIME_CPP[snapshot_name]
-    if not runtime_cpp.is_file():
-        raise FileNotFoundError(f"missing Remill runtime file: {runtime_cpp}")
+_REMILL_IFORM_CACHE: dict[tuple[str, str], list[str]] = {}
 
-    xed_iforms = load_instruction_iforms(snapshot_name)
-    preprocessed = preprocess(runtime_cpp, cxx, show_command)
-    raw_iforms = extract_iform_names(preprocessed)
+
+def remill_iform_names(runtime_cpp: Path, cxx: str = "c++", show_command: bool = False) -> list[str]:
+    """Sorted ISEL_* names Remill defines, obtained by preprocessing its runtime.
+
+    Cached: the same Remill tree is reused for every point of a series.
+    """
+    key = (str(runtime_cpp), cxx)
+    if key not in _REMILL_IFORM_CACHE:
+        if not runtime_cpp.is_file():
+            raise FileNotFoundError(f"missing Remill runtime file: {runtime_cpp}")
+        _REMILL_IFORM_CACHE[key] = extract_iform_names(preprocess(runtime_cpp, cxx, show_command))
+    return _REMILL_IFORM_CACHE[key]
+
+
+def coverage_against(xed_iforms: set[str], runtime_cpp: Path, cxx: str = "c++",
+                     show_command: bool = False) -> dict[str, object]:
+    """Remill x86-64 coverage of an arbitrary XED iform set."""
+    raw_iforms = remill_iform_names(runtime_cpp, cxx, show_command)
     matched, unmatched = normalize_to_xed_to_xml_iforms(raw_iforms, xed_iforms)
     supported_iforms = set(matched.values())
 
     return {
-        "snapshot": snapshot_name,
         "raw_remill_iforms": len(raw_iforms),
         "matched_raw_iforms": len(matched),
         "unmatched_raw_iforms": len(unmatched),
@@ -256,11 +277,30 @@ def coverage_summary(snapshot_name: str, cxx: str, show_command: bool) -> dict[s
     }
 
 
+def coverage_summary(snapshot_name: str, cxx: str, show_command: bool) -> dict[str, object]:
+    runtime_cpp = repo_root() / DEFAULT_RUNTIME_CPP[snapshot_name]
+    summary = coverage_against(load_instruction_iforms(snapshot_name), runtime_cpp, cxx, show_command)
+    summary["snapshot"] = snapshot_name
+    return summary
+
+
 def main() -> int:
     args = parse_args()
-    snapshots = args.snapshot or ["2020-03", "2026"]
 
-    for snapshot_name in snapshots:
+    if args.commit:
+        runtime_cpp = (
+            Path(args.remill_runtime) if args.remill_runtime
+            else repo_root() / DEFAULT_RUNTIME_CPP["2026"]
+        )
+        for commit in args.commit:
+            s = coverage_against(load_iforms_at_commit(commit), runtime_cpp, args.cxx, args.show_command)
+            print(
+                f"{commit[:8]}: {s['supported_iforms']} / {s['total_iforms']} "
+                f"x86-64 iforms covered ({s['coverage_percent']:.2f}%)"
+            )
+        return 0
+
+    for snapshot_name in args.snapshot or ["2020-03", "2026"]:
         summary = coverage_summary(snapshot_name, args.cxx, args.show_command)
         print(
             f"{summary['snapshot']}: {summary['supported_iforms']} / {summary['total_iforms']} "
