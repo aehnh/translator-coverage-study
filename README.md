@@ -98,6 +98,44 @@ release is left absent rather than interpolated, which is why the secondary
 XED-to-XML curve has a visible break at 2023.  Nothing measured is discarded;
 `data/series.csv` remains the record.
 
+## A64 units: why the paper quotes both 4,331 and 1,143
+
+The paper states two sizes for the same ISA.  They are consistent; the difference is
+one of unit *and* of spec version, and `scripts/a64_unit_reconciliation.py`
+(data: `data/a64_units.csv`) derives all of them from the same mra_tools output.
+
+Three nested units live on each row of the A64 decode tree:
+
+| unit | what it is | used by |
+|---|---|---|
+| ARM encoding name | the `// NAME` comment - one per encoding as ARM's XML names it (`ASRV_32_dp_2src`) | this series / §2 |
+| ASL identifier | the `__encoding <ident>` on the same row - mra_tools' block identity (`aarch64_integer_shift_variable`); several ARM encodings share one | RQ2's corpus |
+| opcode mask | that block's `__opcode` bit pattern - what a decoder can be asked to tell apart | RQ2's denominator |
+
+At **v8.6 (2019-12)**, the version RQ2 targets, the chain is exact:
+
+```
+2,336 ARM encoding names  ->  1,152 ASL identifiers  ->  1,143 opcode masks
+```
+
+which reproduces RQ2's 1,152-encoding corpus and 1,143-mask denominator verbatim.
+So the two published numbers differ for two independent reasons: **a different unit**
+(ARM encodings vs opcode masks) and **a different spec version** (2025-12 vs 2019-12).
+At 2025-12 the same chain reads 4,331 -> 3,311 -> 803.
+
+**Opcode masks must not be used as the size unit in a time series.**  They are not
+version-stable: newer ARM XML pushes discrimination out of the `__opcode` pattern and
+into the decode tree, so one mask covers many more encodings than it used to (54
+encodings share a single mask at 2025-12).  The mask count consequently *falls*,
+1,143 -> 803, while the ISA nearly doubles.  The ARM encoding name is the unit that
+tracks the specification monotonically, which is why the series uses it.  RQ2's mask
+basis remains the right denominator for RQ2, where the spec version is fixed and the
+question is what a decoder must distinguish.
+
+`data/a64_units.csv` carries the ARM-encoding and ASL-identifier counts for all 25
+releases, so RQ2's corpus unit can be tracked over time too: it grows 1,152 -> 3,312,
+i.e. +187% against the ARM-encoding unit's +85%.
+
 ## Coverage definition
 
 Remill declares one `DEF_ISEL`/`ISEL_` symbol per instruction form it lifts.  The

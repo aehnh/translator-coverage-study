@@ -111,6 +111,17 @@ def main() -> int:
                 s_ = cov_x86.coverage_against(count_xed.load_enum_iforms(label), runtime)
                 check(f"Remill covers Intel x86 @{label}", s_["supported_iforms"], want)
 
+    # --- A64 unit reconciliation (the paper quotes both 4,331 and 1,143) --------
+    recon = importlib.import_module("a64_unit_reconciliation")
+    v86_instrs = REPO / "external/arch8.6/arch_instrs.asl"
+    if v86_instrs.is_file():
+        _, pairs, masks = recon.mask_units(v86_instrs)
+        check("v8.6 ASL identifiers (RQ2 corpus)", pairs, 1152)
+        check("v8.6 opcode masks (RQ2 denominator)", masks, 1143)
+    if "2019-12" in count_asl.available_releases():
+        arm, asl = recon.decode_units(count_asl.resolve_decode_file("2019-12"))
+        check("v8.6 collapse chain 2336 -> 1152", (arm, asl), (2336, 1152))
+
     # --- series file contains the anchors --------------------------------------
     csv_path = REPO / "data" / "series.csv"
     if csv_path.is_file():

@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 """Render data/series_annual.csv as a static SVG figure (and a LaTeX table).
 
-Sampling rule, applied identically to both ISAs: **one point per calendar year,
-2020-2025, taking the last release the vendor published in that year.**  The full
-density (every ARM quarterly release, every XED-to-XML snapshot, every dated XED
-anchor) stays in data/series.csv; this is presentation only.  Nothing is
-interpolated: a year with no obtainable release leaves a break in the line.
+One panel per ISA, side by side, sharing the year axis.  In each panel the upper
+line is the size of the ISA as the vendor's own machine-readable specification
+defines it; the filled band beneath is the number of those instructions Remill
+lifts.  The band is what a hand-written lifter covers, the widening gap above it
+is what it does not, and the coverage percentage is the ratio of the two - so
+counts and percentages appear in one plot without a second y-axis.
 
-Layout is 2 rows (one per ISA) x 2 columns:
-  left   absolute counts  - ISA size and the number Remill lifts
-  right  coverage percent - the same data as a share of the ISA
+Sampling rule, applied identically to both ISAs: one point per calendar year,
+2020-2025, taking the last release the vendor published in that year.  Full
+density stays in data/series.csv; nothing is interpolated, so a year with no
+obtainable release leaves a break in the line.
 
-Counts and percentages are kept on separate panels rather than sharing one plot
-with two y-axes.  Colour follows the entity across the whole figure: blue = ISA
-size as the vendor defines it, orange = instructions Remill lifts, aqua =
-coverage %, violet = the third-party XED-to-XML export (secondary, x86 only).
-The figure is static: it targets a paper, so there is no hover layer.
+The third-party XED-to-XML export is deliberately NOT plotted: with Intel's own
+xed_iform_enum_t as the primary x86 measure the export is provenance, not a
+result.  It remains in data/ and in the regression assertions, and the finding
+that it lagged Intel by two years is documented in the README.
 """
 
 from __future__ import annotations
@@ -29,12 +30,10 @@ REPO = Path(__file__).resolve().parents[1]
 SURFACE, INK, INK_2 = "#fcfcfb", "#0b0b0b", "#52514e"
 GRID, AXIS = "#e4e3df", "#b9b8b2"
 
-C_SIZE = "#2a78d6"     # slot 1 - ISA size (vendor spec)
-C_COVER = "#eb6834"    # slot 2 - lifted by Remill
-C_PCT = "#1baf7a"      # slot 3 - coverage % (low contrast: always direct-labelled)
-C_FORK = "#4a3aa7"     # slot 7 - third-party XED-to-XML export (secondary)
+C_SIZE = "#2a78d6"     # slot 1 - ISA size as the vendor defines it
+C_COVER = "#eb6834"    # slot 2 - instructions Remill lifts
 
-ISA_TITLE = {"x86-64": "x86-64 (Intel XED iforms)", "a64": "A64 (ARM ASL encodings)"}
+ISA_TITLE = {"x86-64": "x86-64 — Intel XED iforms", "a64": "A64 — ARM ASL encodings"}
 PRIMARY = {"x86-64": "intel-xed-enum", "a64": "arm-mra"}
 YEARS = list(range(2020, 2026))
 
@@ -44,88 +43,93 @@ def esc(s: str) -> str:
 
 
 class Panel:
-    def __init__(self, x0, y0, w, h, xmin, xmax, ymin, ymax):
+    def __init__(self, x0, y0, w, h, xmin, xmax, ymax):
         self.x0, self.y0, self.w, self.h = x0, y0, w, h
-        self.xmin, self.xmax, self.ymin, self.ymax = xmin, xmax, ymin, ymax
+        self.xmin, self.xmax, self.ymax = xmin, xmax, ymax
 
     def px(self, x):
         return self.x0 + (x - self.xmin) / (self.xmax - self.xmin) * self.w
 
     def py(self, y):
-        return self.y0 + self.h - (y - self.ymin) / (self.ymax - self.ymin) * self.h
+        return self.y0 + self.h - (y / self.ymax) * self.h
 
 
-def nice_ticks(lo, hi, target=5):
-    span = hi - lo
-    if span <= 0:
-        return [lo]
-    raw = span / target
-    mag = 10 ** (len(str(int(raw))) - 1) if raw >= 1 else 0.1
+def nice_ticks(hi, target=5):
+    raw = hi / target
+    mag = 10 ** (len(str(int(raw))) - 1) if raw >= 1 else 1
     step = mag
     for mult in (1, 2, 2.5, 5, 10):
         step = mag * mult
-        if span / step <= target * 1.4:
+        if hi / step <= target * 1.4:
             break
-    ticks, v = [], int(lo / step) * step
-    while v <= hi + step * 0.001:
-        if v >= lo - step * 0.001:
-            ticks.append(round(v, 6))
+    ticks, v = [], 0.0
+    while v <= hi:
+        ticks.append(round(v, 6))
         v += step
     return ticks
 
 
-def runs(points):
-    """Split (year, value) points into runs of consecutive years, so a missing
-    year leaves a visible break instead of a straight line across it."""
-    out, cur = [], []
-    for pt in points:
-        if cur and pt[0] != cur[-1][0] + 1:
-            out.append(cur); cur = []
-        cur.append(pt)
-    if cur:
-        out.append(cur)
-    return out
-
-
-def draw_panel(out, p, title, series, ylab, pct=False):
+def draw(out, p, title, rows):
     out.append(f'<rect x="{p.x0}" y="{p.y0}" width="{p.w}" height="{p.h}" fill="{SURFACE}"/>')
-    for t in nice_ticks(p.ymin, p.ymax):
+    for t in nice_ticks(p.ymax):
         y = p.py(t)
-        if not (p.y0 - 1 <= y <= p.y0 + p.h + 1):
-            continue
-        out.append(f'<line x1="{p.x0}" y1="{y:.1f}" x2="{p.x0+p.w}" y2="{y:.1f}" stroke="{GRID}" stroke-width="1"/>')
+        out.append(f'<line x1="{p.x0}" y1="{y:.1f}" x2="{p.x0+p.w}" y2="{y:.1f}" '
+                   f'stroke="{GRID}" stroke-width="1"/>')
         out.append(f'<text x="{p.x0-8}" y="{y+4:.1f}" text-anchor="end" font-size="11" '
-                   f'fill="{INK_2}">{f"{t:g}%" if pct else f"{t:,.0f}"}</text>')
+                   f'fill="{INK_2}">{t:,.0f}</text>')
     for t in YEARS:
         x = p.px(t)
-        out.append(f'<line x1="{x:.1f}" y1="{p.y0+p.h}" x2="{x:.1f}" y2="{p.y0+p.h+4}" stroke="{AXIS}" stroke-width="1"/>')
-        out.append(f'<text x="{x:.1f}" y="{p.y0+p.h+18}" text-anchor="middle" font-size="11" fill="{INK_2}">{t}</text>')
-    out.append(f'<line x1="{p.x0}" y1="{p.y0+p.h}" x2="{p.x0+p.w}" y2="{p.y0+p.h}" stroke="{AXIS}" stroke-width="1"/>')
-    out.append(f'<text x="{p.x0}" y="{p.y0-10}" font-size="12.5" font-weight="600" fill="{INK}">{esc(title)}</text>')
-    out.append(f'<text x="{p.x0-46}" y="{p.y0+p.h/2}" font-size="11" fill="{INK_2}" text-anchor="middle" '
-               f'transform="rotate(-90 {p.x0-46} {p.y0+p.h/2})">{esc(ylab)}</text>')
+        out.append(f'<line x1="{x:.1f}" y1="{p.y0+p.h}" x2="{x:.1f}" y2="{p.y0+p.h+4}" '
+                   f'stroke="{AXIS}" stroke-width="1"/>')
+        out.append(f'<text x="{x:.1f}" y="{p.y0+p.h+18}" text-anchor="middle" font-size="11" '
+                   f'fill="{INK_2}">{t}</text>')
+    out.append(f'<line x1="{p.x0}" y1="{p.y0+p.h}" x2="{p.x0+p.w}" y2="{p.y0+p.h}" '
+               f'stroke="{AXIS}" stroke-width="1"/>')
+    out.append(f'<text x="{p.x0}" y="{p.y0-26}" font-size="13" font-weight="600" '
+               f'fill="{INK}">{esc(title)}</text>')
+    out.append(f'<text x="{p.x0-48}" y="{p.y0+p.h/2}" font-size="11" fill="{INK_2}" '
+               f'text-anchor="middle" transform="rotate(-90 {p.x0-48} {p.y0+p.h/2})">'
+               f'instructions</text>')
 
-    labels = []
-    for colour, pts in series:
-        if not pts:
-            continue
-        for run in runs(pts):
-            d = " ".join(("M" if i == 0 else "L") + f"{p.px(x):.1f},{p.py(y):.1f}"
-                         for i, (x, y) in enumerate(run))
-            out.append(f'<path d="{d}" fill="none" stroke="{colour}" stroke-width="2" '
-                       f'stroke-linejoin="round" stroke-linecap="round"/>')
+    size = [(r["y"], r["n"]) for r in rows]
+    cov = [(r["y"], r["c"]) for r in rows]
+
+    # filled band: what Remill lifts
+    d = " ".join(("M" if i == 0 else "L") + f"{p.px(x):.1f},{p.py(y):.1f}"
+                 for i, (x, y) in enumerate(cov))
+    d += f" L{p.px(cov[-1][0]):.1f},{p.py(0):.1f} L{p.px(cov[0][0]):.1f},{p.py(0):.1f} Z"
+    out.append(f'<path d="{d}" fill="{C_COVER}" fill-opacity="0.20" stroke="none"/>')
+
+    for colour, pts in ((C_SIZE, size), (C_COVER, cov)):
+        dd = " ".join(("M" if i == 0 else "L") + f"{p.px(x):.1f},{p.py(y):.1f}"
+                      for i, (x, y) in enumerate(pts))
+        out.append(f'<path d="{dd}" fill="none" stroke="{colour}" stroke-width="2" '
+                   f'stroke-linejoin="round" stroke-linecap="round"/>')
         for x, y in pts:
             out.append(f'<circle cx="{p.px(x):.1f}" cy="{p.py(y):.1f}" r="4" fill="{colour}" '
                        f'stroke="{SURFACE}" stroke-width="2"/>')
-        lx, ly = pts[-1]
-        labels.append([p.px(lx) + 9, p.py(ly) + 4, f"{ly:.1f}%" if pct else f"{ly:,.0f}", colour])
 
-    labels.sort(key=lambda l: l[1])
-    for i in range(1, len(labels)):
-        if labels[i][1] - labels[i - 1][1] < 13:
-            labels[i][1] = labels[i - 1][1] + 13
-    for x, y, txt, colour in labels:
-        out.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="11" font-weight="600" fill="{INK}">{esc(txt)}</text>')
+    # endpoint counts
+    out.append(f'<text x="{p.px(size[-1][0])+9:.1f}" y="{p.py(size[-1][1])+4:.1f}" font-size="11" '
+               f'font-weight="600" fill="{INK}">{size[-1][1]:,}</text>')
+    out.append(f'<text x="{p.px(cov[-1][0])+9:.1f}" y="{p.py(cov[-1][1])+4:.1f}" font-size="11" '
+               f'font-weight="600" fill="{INK}">{cov[-1][1]:,}</text>')
+
+    # the ratio, stated at both ends: inside the band when it is tall enough to hold
+    # the text, otherwise just above the covered line so it never sits on the stroke
+    for r, anchor, dx in ((rows[0], "start", 6), (rows[-1], "end", -6)):
+        xm = p.px(r["y"]) + dx
+        band = p.py(0) - p.py(r["c"])
+        ym = p.py(r["c"]) + band * 0.55 + 4 if band >= 30 else p.py(r["c"]) - 9
+        out.append(f'<text x="{xm:.1f}" y="{ym:.1f}" text-anchor="{anchor}" font-size="11.5" '
+                   f'font-weight="600" fill="{INK}">{r["p"]:.1f}%</text>')
+
+    # label the gap once, in the widest part
+    gap = max(rows, key=lambda r: r["n"] - r["c"])
+    gx = p.px(gap["y"])
+    gy = (p.py(gap["n"]) + p.py(gap["c"])) / 2
+    out.append(f'<text x="{gx:.1f}" y="{gy:.1f}" text-anchor="middle" font-size="11" '
+               f'fill="{INK_2}">not lifted</text>')
 
 
 def main() -> int:
@@ -137,59 +141,41 @@ def main() -> int:
 
     all_rows = list(csv.DictReader((REPO / args.csv).open(encoding="utf-8")))
     for r in all_rows:
-        r["y"] = int(r["year"])
-        r["n"] = int(r["isa_instruction_count"])
-        r["c"] = int(r["remill_covered_count"])
-        r["p"] = float(r["coverage_pct"])
-
+        r["y"] = int(r["year"]); r["n"] = int(r["isa_instruction_count"])
+        r["c"] = int(r["remill_covered_count"]); r["p"] = float(r["coverage_pct"])
     rows = [r for r in all_rows if r["source"] == PRIMARY.get(r["isa"])]
-    fork = [r for r in all_rows if r["source"] == "xed-to-xml-export"]
 
     isas = [i for i in ("x86-64", "a64") if any(r["isa"] == i for r in rows)]
-    xmin, xmax = YEARS[0] - 0.35, YEARS[-1] + 0.95
+    xmin, xmax = YEARS[0] - 0.25, YEARS[-1] + 0.55
 
-    W, H, PW, PH = 1010, 300 * len(isas) + 82, 360, 210
+    PW, PH = 400, 250
+    W, H = 100 + len(isas) * (PW + 90), PH + 172
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" '
            f'font-family="Inter, Helvetica, Arial, sans-serif">',
            f'<rect width="{W}" height="{H}" fill="{SURFACE}"/>',
-           f'<text x="70" y="26" font-size="15" font-weight="700" fill="{INK}">'
-           f'ISA growth vs. hand-written lifter coverage (Remill)</text>',
-           f'<text x="70" y="44" font-size="11.5" fill="{INK_2}">'
-           f'One point per calendar year: the last release the vendor published that year. '
-           f'Remill fixed at its latest checkout. Line breaks mark years with no obtainable release.</text>']
+           f'<text x="72" y="28" font-size="15" font-weight="700" fill="{INK}">'
+           f'The ISA grows; the hand-written lifter does not</text>',
+           f'<text x="72" y="46" font-size="11.5" fill="{INK_2}">'
+           f'Shaded band = instructions Remill lifts; the gap above it = the rest of the ISA. '
+           f'One point per year, the last release each vendor published. Remill fixed at latest.</text>']
 
     for k, isa in enumerate(isas):
         rs = sorted((r for r in rows if r["isa"] == isa), key=lambda r: r["y"])
-        fk = sorted((r for r in fork if r["isa"] == isa), key=lambda r: r["y"])
-        top = 88 + k * 290
+        p = Panel(72 + k * (PW + 90), 96, PW, PH, xmin, xmax, max(r["n"] for r in rs) * 1.16)
+        draw(out, p, ISA_TITLE[isa], rs)
 
-        ymax_n = max([r["n"] for r in rs] + [r["n"] for r in fk]) * 1.14
-        pL = Panel(70, top, PW, PH, xmin, xmax, 0, ymax_n)
-        series = [(C_SIZE, [(r["y"], r["n"]) for r in rs])]
-        if fk:
-            series.append((C_FORK, [(r["y"], r["n"]) for r in fk]))
-        series.append((C_COVER, [(r["y"], r["c"]) for r in rs]))
-        draw_panel(out, pL, f'{ISA_TITLE[isa]} - instruction count', series, "instructions")
-
-        pR = Panel(70 + PW + 120, top, PW, PH, xmin, xmax, 0, max(r["p"] for r in rs) * 1.3)
-        draw_panel(out, pR, f'{ISA_TITLE[isa]} - coverage',
-                   [(C_PCT, [(r["y"], r["p"]) for r in rs])], "% of ISA covered", pct=True)
-
-    ly = H - 20
+    ly = H - 22
     out.append(f'<g font-size="11.5" fill="{INK_2}">')
-    for i, (colour, label) in enumerate([(C_SIZE, "ISA size (vendor spec)"),
-                                         (C_COVER, "lifted by Remill"),
-                                         (C_PCT, "coverage % (right panels)"),
-                                         (C_FORK, "XED-to-XML export (secondary)")]):
-        x = 70 + i * 228
+    for i, (colour, label) in enumerate([(C_SIZE, "ISA size (vendor specification)"),
+                                         (C_COVER, "lifted by Remill")]):
+        x = 72 + i * 260
         out.append(f'<line x1="{x}" y1="{ly-4}" x2="{x+22}" y2="{ly-4}" stroke="{colour}" stroke-width="2"/>')
         out.append(f'<circle cx="{x+11}" cy="{ly-4}" r="4" fill="{colour}" stroke="{SURFACE}" stroke-width="2"/>')
         out.append(f'<text x="{x+30}" y="{ly}" fill="{INK_2}">{esc(label)}</text>')
     out.append("</g></svg>")
 
-    svg_path = REPO / args.out
-    svg_path.parent.mkdir(parents=True, exist_ok=True)
-    svg_path.write_text("\n".join(out) + "\n", encoding="utf-8")
+    (REPO / args.out).parent.mkdir(parents=True, exist_ok=True)
+    (REPO / args.out).write_text("\n".join(out) + "\n", encoding="utf-8")
 
     tex = [r"% generated by scripts/plot_series.py",
            r"% one point per calendar year: the last release the vendor published that year",
@@ -204,7 +190,7 @@ def main() -> int:
     tex.append(r"\end{tabular}")
     (REPO / args.tex).write_text("\n".join(tex) + "\n", encoding="utf-8")
 
-    print(f"wrote {svg_path}\nwrote {REPO / args.tex}")
+    print(f"wrote {REPO / args.out}\nwrote {REPO / args.tex}")
     return 0
 
 
