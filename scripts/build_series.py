@@ -51,6 +51,7 @@ REPO = Path(__file__).resolve().parents[1]
 FIELDS = [
     "date",
     "isa",
+    "source",
     "spec_version",
     "spec_date",
     "spec_ref",
@@ -141,6 +142,7 @@ def build_a64(mode: str, trees: RemillTrees, cxx: str) -> list[dict]:
         rows.append({
             "date": f"{release}-01",
             "isa": "a64",
+            "source": "arm-mra",
             "spec_version": release,
             "spec_date": f"{release}-01",
             "spec_ref": f"specs/a64/{release}",
@@ -178,6 +180,7 @@ def build_x86(mode: str, trees: RemillTrees, cxx: str) -> list[dict]:
         rows.append({
             "date": date,
             "isa": "x86-64",
+            "source": "xed-to-xml-export",
             "spec_version": xed_version,
             "spec_date": count_xed.xed_datafiles_date(commit) or "",
             "spec_ref": commit[:12],
@@ -192,6 +195,66 @@ def build_x86(mode: str, trees: RemillTrees, cxx: str) -> list[dict]:
     return rows
 
 
+def build_x86_intel(mode: str, trees: RemillTrees, cxx: str) -> list[dict]:
+    """Primary x86 measure: Intel's own xed_iform_enum_t at dated upstream-XED anchors."""
+    rows: list[dict] = []
+    default_runtime = REPO / "external" / "remill" / "lib" / "Arch" / "X86" / "Runtime" / "Instructions.cpp"
+    head_commit = git(REPO / "external" / "remill", "rev-parse", "HEAD").strip()
+    head_date = git(REPO / "external" / "remill", "log", "-1", "--format=%ad",
+                    "--date=short", "HEAD").strip()
+
+    prev_count = None
+    for rec in count_xed.x86_manifest():
+        iforms = count_xed.load_enum_iforms(rec["label"])
+        if mode == "contemporaneous":
+            rcommit, rdate = remill_commit_before(rec["intel_date"])
+            runtime = x86_runtime(trees.path_for(rcommit))
+            if runtime is None:
+                continue
+        else:
+            rcommit, rdate, runtime = head_commit, head_date, default_runtime
+
+        s = cov_x86.coverage_against(iforms, runtime, cxx, False)
+        rows.append({
+            "date": rec["intel_date"],
+            "isa": "x86-64",
+            "source": "intel-xed-enum",
+            "spec_version": rec["xed_version"],
+            "spec_date": rec["intel_date"],
+            "spec_ref": rec["xed_commit"][:12],
+            "isa_instruction_count": s["total_iforms"],
+            "remill_ref": rcommit[:12],
+            "remill_date": rdate,
+            "remill_covered_count": s["supported_iforms"],
+            "coverage_pct": round(s["coverage_percent"], 2),
+            "is_change_point": int(prev_count != s["total_iforms"]),
+        })
+        prev_count = s["total_iforms"]
+    return rows
+
+
+ANNUAL_YEARS = range(2020, 2026)
+
+
+def downsample_annual(rows: list[dict]) -> list[dict]:
+    """One point per (source, isa, calendar year): the LAST release of that year.
+
+    The same rule is applied to both ISAs so the grid is matched and reproducible.
+    Years with no obtainable release are simply absent - nothing is interpolated.
+    """
+    best: dict[tuple, dict] = {}
+    for r in rows:
+        year = int(r["spec_date"][:4]) if r["spec_date"] else int(r["date"][:4])
+        if year not in ANNUAL_YEARS:
+            continue
+        key = (r["source"], r["isa"], year)
+        cur = best.get(key)
+        if cur is None or (r["spec_date"] or r["date"]) >= (cur["spec_date"] or cur["date"]):
+            best[key] = r
+    out = [dict(best[k], year=k[2]) for k in sorted(best, key=lambda k: (k[1], k[0], k[2]))]
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -202,6 +265,8 @@ def main() -> int:
     ap.add_argument("--cxx", default="c++")
     ap.add_argument("--out-csv", default="data/series.csv")
     ap.add_argument("--out-json", default="data/series.json")
+    ap.add_argument("--out-annual", default="data/series_annual.csv",
+                    help="Downsampled presentation grid: last release of each year, 2020-2025.")
     args = ap.parse_args()
 
     trees = RemillTrees()
@@ -210,11 +275,12 @@ def main() -> int:
         if args.isa in ("a64", "both"):
             rows += build_a64(args.remill, trees, args.cxx)
         if args.isa in ("x86-64", "both"):
+            rows += build_x86_intel(args.remill, trees, args.cxx)
             rows += build_x86(args.remill, trees, args.cxx)
     finally:
         trees.cleanup()
 
-    rows.sort(key=lambda r: (r["isa"], r["date"]))
+    rows.sort(key=lambda r: (r["isa"], r["source"], r["date"]))
 
     csv_path = REPO / args.out_csv
     csv_path.parent.mkdir(parents=True, exist_ok=True)
@@ -226,10 +292,18 @@ def main() -> int:
     json_path = REPO / args.out_json
     json_path.write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
 
+    annual = downsample_annual(rows)
+    ann_path = REPO / args.out_annual
+    with ann_path.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=["year"] + FIELDS)
+        w.writeheader()
+        w.writerows(annual)
+
     for r in rows:
-        print(f"{r['date']}  {r['isa']:<7} {r['isa_instruction_count']:>6} instrs  "
+        print(f"{r['date']}  {r['isa']:<7} {r['source']:<18} {r['isa_instruction_count']:>6} instrs  "
               f"{r['remill_covered_count']:>5} covered  {r['coverage_pct']:>6.2f}%")
-    print(f"\nwrote {csv_path} and {json_path} ({len(rows)} rows, remill={args.remill})")
+    print(f"\nwrote {csv_path}, {json_path} and {ann_path} "
+          f"({len(rows)} rows, {len(annual)} annual, remill={args.remill})")
     return 0
 
 

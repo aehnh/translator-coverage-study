@@ -2,6 +2,7 @@
   {
     "date": "2019-12-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2019-12",
     "spec_date": "2019-12-01",
     "spec_ref": "specs/a64/2019-12",
@@ -15,6 +16,7 @@
   {
     "date": "2020-03-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2020-03",
     "spec_date": "2020-03-01",
     "spec_ref": "specs/a64/2020-03",
@@ -28,6 +30,7 @@
   {
     "date": "2020-06-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2020-06",
     "spec_date": "2020-06-01",
     "spec_ref": "specs/a64/2020-06",
@@ -41,6 +44,7 @@
   {
     "date": "2020-09-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2020-09",
     "spec_date": "2020-09-01",
     "spec_ref": "specs/a64/2020-09",
@@ -54,6 +58,7 @@
   {
     "date": "2020-12-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2020-12",
     "spec_date": "2020-12-01",
     "spec_ref": "specs/a64/2020-12",
@@ -67,6 +72,7 @@
   {
     "date": "2021-03-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2021-03",
     "spec_date": "2021-03-01",
     "spec_ref": "specs/a64/2021-03",
@@ -80,6 +86,7 @@
   {
     "date": "2021-06-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2021-06",
     "spec_date": "2021-06-01",
     "spec_ref": "specs/a64/2021-06",
@@ -93,6 +100,7 @@
   {
     "date": "2021-09-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2021-09",
     "spec_date": "2021-09-01",
     "spec_ref": "specs/a64/2021-09",
@@ -106,6 +114,7 @@
   {
     "date": "2021-12-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2021-12",
     "spec_date": "2021-12-01",
     "spec_ref": "specs/a64/2021-12",
@@ -119,6 +128,7 @@
   {
     "date": "2022-03-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2022-03",
     "spec_date": "2022-03-01",
     "spec_ref": "specs/a64/2022-03",
@@ -132,6 +142,7 @@
   {
     "date": "2022-06-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2022-06",
     "spec_date": "2022-06-01",
     "spec_ref": "specs/a64/2022-06",
@@ -145,6 +156,7 @@
   {
     "date": "2022-09-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2022-09",
     "spec_date": "2022-09-01",
     "spec_ref": "specs/a64/2022-09",
@@ -158,6 +170,7 @@
   {
     "date": "2022-12-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2022-12",
     "spec_date": "2022-12-01",
     "spec_ref": "specs/a64/2022-12",
@@ -171,6 +184,7 @@
   {
     "date": "2023-03-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2023-03",
     "spec_date": "2023-03-01",
     "spec_ref": "specs/a64/2023-03",
@@ -184,6 +198,7 @@
   {
     "date": "2023-06-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2023-06",
     "spec_date": "2023-06-01",
     "spec_ref": "specs/a64/2023-06",
@@ -197,6 +212,7 @@
   {
     "date": "2023-09-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2023-09",
     "spec_date": "2023-09-01",
     "spec_ref": "specs/a64/2023-09",
@@ -210,6 +226,7 @@
   {
     "date": "2023-12-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2023-12",
     "spec_date": "2023-12-01",
     "spec_ref": "specs/a64/2023-12",
@@ -223,6 +240,7 @@
   {
     "date": "2024-06-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2024-06",
     "spec_date": "2024-06-01",
     "spec_ref": "specs/a64/2024-06",
@@ -236,6 +254,7 @@
   {
     "date": "2024-09-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2024-09",
     "spec_date": "2024-09-01",
     "spec_ref": "specs/a64/2024-09",
@@ -249,6 +268,7 @@
   {
     "date": "2024-12-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2024-12",
     "spec_date": "2024-12-01",
     "spec_ref": "specs/a64/2024-12",
@@ -262,6 +282,7 @@
   {
     "date": "2025-06-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2025-06",
     "spec_date": "2025-06-01",
     "spec_ref": "specs/a64/2025-06",
@@ -275,6 +296,7 @@
   {
     "date": "2025-09-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2025-09",
     "spec_date": "2025-09-01",
     "spec_ref": "specs/a64/2025-09",
@@ -288,6 +310,7 @@
   {
     "date": "2025-12-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2025-12",
     "spec_date": "2025-12-01",
     "spec_ref": "specs/a64/2025-12",
@@ -301,6 +324,7 @@
   {
     "date": "2026-03-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2026-03",
     "spec_date": "2026-03-01",
     "spec_ref": "specs/a64/2026-03",
@@ -314,6 +338,7 @@
   {
     "date": "2026-06-01",
     "isa": "a64",
+    "source": "arm-mra",
     "spec_version": "2026-06",
     "spec_date": "2026-06-01",
     "spec_ref": "specs/a64/2026-06",
@@ -325,8 +350,121 @@
     "is_change_point": 1
   },
   {
+    "date": "2019-08-21",
+    "isa": "x86-64",
+    "source": "intel-xed-enum",
+    "spec_version": "11.0.1",
+    "spec_date": "2019-08-21",
+    "spec_ref": "b4109c0823ff",
+    "isa_instruction_count": 6339,
+    "remill_ref": "7055a0c54aff",
+    "remill_date": "2026-03-26",
+    "remill_covered_count": 2027,
+    "coverage_pct": 31.98,
+    "is_change_point": 1
+  },
+  {
+    "date": "2020-12-09",
+    "isa": "x86-64",
+    "source": "intel-xed-enum",
+    "spec_version": "12.0.1",
+    "spec_date": "2020-12-09",
+    "spec_ref": "93c0b83e8544",
+    "isa_instruction_count": 6398,
+    "remill_ref": "7055a0c54aff",
+    "remill_date": "2026-03-26",
+    "remill_covered_count": 2027,
+    "coverage_pct": 31.68,
+    "is_change_point": 1
+  },
+  {
+    "date": "2021-07-13",
+    "isa": "x86-64",
+    "source": "intel-xed-enum",
+    "spec_version": "13.0.0",
+    "spec_date": "2021-07-13",
+    "spec_ref": "d57a3bd0a8ad",
+    "isa_instruction_count": 6866,
+    "remill_ref": "7055a0c54aff",
+    "remill_date": "2026-03-26",
+    "remill_covered_count": 2029,
+    "coverage_pct": 29.55,
+    "is_change_point": 1
+  },
+  {
+    "date": "2022-10-12",
+    "isa": "x86-64",
+    "source": "intel-xed-enum",
+    "spec_version": "v2022.10.11",
+    "spec_date": "2022-10-12",
+    "spec_ref": "9fc12ab6c0ba",
+    "isa_instruction_count": 6958,
+    "remill_ref": "7055a0c54aff",
+    "remill_date": "2026-03-26",
+    "remill_covered_count": 2027,
+    "coverage_pct": 29.13,
+    "is_change_point": 1
+  },
+  {
+    "date": "2023-12-20",
+    "isa": "x86-64",
+    "source": "intel-xed-enum",
+    "spec_version": "v2023.12.19",
+    "spec_date": "2023-12-20",
+    "spec_ref": "2b5c29a1ab4e",
+    "isa_instruction_count": 8074,
+    "remill_ref": "7055a0c54aff",
+    "remill_date": "2026-03-26",
+    "remill_covered_count": 2030,
+    "coverage_pct": 25.14,
+    "is_change_point": 1
+  },
+  {
+    "date": "2024-11-05",
+    "isa": "x86-64",
+    "source": "intel-xed-enum",
+    "spec_version": "v2024.11.04",
+    "spec_date": "2024-11-05",
+    "spec_ref": "d4d502003bff",
+    "isa_instruction_count": 8955,
+    "remill_ref": "7055a0c54aff",
+    "remill_date": "2026-03-26",
+    "remill_covered_count": 2029,
+    "coverage_pct": 22.66,
+    "is_change_point": 1
+  },
+  {
+    "date": "2025-12-15",
+    "isa": "x86-64",
+    "source": "intel-xed-enum",
+    "spec_version": "v2025.12.14",
+    "spec_date": "2025-12-15",
+    "spec_ref": "95ca7183f6e2",
+    "isa_instruction_count": 8863,
+    "remill_ref": "7055a0c54aff",
+    "remill_date": "2026-03-26",
+    "remill_covered_count": 2040,
+    "coverage_pct": 23.02,
+    "is_change_point": 1
+  },
+  {
+    "date": "2026-08-24",
+    "isa": "x86-64",
+    "source": "intel-xed-enum",
+    "spec_version": "v2026.08.23",
+    "spec_date": "2026-08-24",
+    "spec_ref": "0bcb6237345c",
+    "isa_instruction_count": 9002,
+    "remill_ref": "7055a0c54aff",
+    "remill_date": "2026-03-26",
+    "remill_covered_count": 2040,
+    "coverage_pct": 22.66,
+    "is_change_point": 1
+  },
+  {
     "date": "2019-01-10",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-01-09",
     "spec_ref": "afad088655ae",
@@ -340,6 +478,7 @@
   {
     "date": "2019-01-11",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-01-09",
     "spec_ref": "8a1c951645aa",
@@ -353,6 +492,7 @@
   {
     "date": "2019-01-29",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-01-09",
     "spec_ref": "cb791578ffee",
@@ -366,6 +506,7 @@
   {
     "date": "2019-01-30",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-01-17",
     "spec_ref": "515c469ada47",
@@ -379,6 +520,7 @@
   {
     "date": "2019-02-04",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-01-17",
     "spec_ref": "f49f455c8ea4",
@@ -392,6 +534,7 @@
   {
     "date": "2019-03-01",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-01-17",
     "spec_ref": "4132251cb58b",
@@ -405,6 +548,7 @@
   {
     "date": "2019-03-11",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-01-17",
     "spec_ref": "bd6e8ef15316",
@@ -418,6 +562,7 @@
   {
     "date": "2019-03-14",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-01-17",
     "spec_ref": "c2ef0334a95a",
@@ -431,6 +576,7 @@
   {
     "date": "2019-10-29",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-10-29",
     "spec_ref": "1bea5d97a0a2",
@@ -444,6 +590,7 @@
   {
     "date": "2019-11-01",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "8.30.0-18-g47be2133",
     "spec_date": "2019-10-29",
     "spec_ref": "23be460c3e66",
@@ -457,6 +604,7 @@
   {
     "date": "2020-03-13",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "11.0.1",
     "spec_date": "2019-10-29",
     "spec_ref": "78952d178088",
@@ -470,6 +618,7 @@
   {
     "date": "2020-03-13",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "11.0.1",
     "spec_date": "2019-10-29",
     "spec_ref": "a926c8879e24",
@@ -483,6 +632,7 @@
   {
     "date": "2020-03-13",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "11.0.1",
     "spec_date": "2019-10-29",
     "spec_ref": "dfedf9f33a74",
@@ -496,6 +646,7 @@
   {
     "date": "2020-04-14",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "11.0.1",
     "spec_date": "2019-10-29",
     "spec_ref": "a75418ef5c2c",
@@ -509,6 +660,7 @@
   {
     "date": "2020-04-17",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "11.0.1",
     "spec_date": "2020-04-14",
     "spec_ref": "24021c308752",
@@ -522,6 +674,7 @@
   {
     "date": "2020-12-04",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "12.0.1",
     "spec_date": "2020-11-03",
     "spec_ref": "1cbef1740886",
@@ -535,6 +688,7 @@
   {
     "date": "2021-01-11",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "12.0.1",
     "spec_date": "2020-11-03",
     "spec_ref": "15f1949231a8",
@@ -548,6 +702,7 @@
   {
     "date": "2021-01-12",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "12.0.1",
     "spec_date": "2021-01-11",
     "spec_ref": "a7b24049fd0a",
@@ -561,6 +716,7 @@
   {
     "date": "2021-01-20",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "12.0.1",
     "spec_date": "2021-01-05",
     "spec_ref": "47278c8e658f",
@@ -574,6 +730,7 @@
   {
     "date": "2021-01-23",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "12.0.1",
     "spec_date": "2021-01-05",
     "spec_ref": "84f584f3296e",
@@ -587,6 +744,7 @@
   {
     "date": "2021-03-10",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "12.0.1",
     "spec_date": "2021-01-05",
     "spec_ref": "79bc54f40b34",
@@ -600,6 +758,7 @@
   {
     "date": "2021-11-16",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "13.0.0",
     "spec_date": "2021-07-13",
     "spec_ref": "7cba22857e7e",
@@ -613,6 +772,7 @@
   {
     "date": "2021-11-16",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "13.0.0",
     "spec_date": "2021-07-13",
     "spec_ref": "4d91ea48be5b",
@@ -626,6 +786,7 @@
   {
     "date": "2021-11-22",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "13.0.0",
     "spec_date": "2021-07-13",
     "spec_ref": "d63d7d2f9d70",
@@ -639,6 +800,7 @@
   {
     "date": "2021-12-13",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "13.0.0",
     "spec_date": "2021-07-13",
     "spec_ref": "816ea7d7c4df",
@@ -652,6 +814,7 @@
   {
     "date": "2021-12-18",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "13.0.0",
     "spec_date": "2021-07-13",
     "spec_ref": "68054e95e147",
@@ -665,6 +828,7 @@
   {
     "date": "2022-02-19",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "13.0.0",
     "spec_date": "2021-07-13",
     "spec_ref": "c6003a42b1d0",
@@ -678,6 +842,7 @@
   {
     "date": "2022-02-19",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "13.0.0",
     "spec_date": "2021-07-13",
     "spec_ref": "35af84a46c69",
@@ -691,6 +856,7 @@
   {
     "date": "2022-11-14",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2022.10.11",
     "spec_date": "2022-10-12",
     "spec_ref": "05f620160337",
@@ -704,6 +870,7 @@
   {
     "date": "2022-11-18",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2022.10.11",
     "spec_date": "2022-10-12",
     "spec_ref": "35283e45b233",
@@ -717,6 +884,7 @@
   {
     "date": "2025-03-24",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2024.11.04",
     "spec_date": "2024-11-05",
     "spec_ref": "fe0014209c73",
@@ -730,6 +898,7 @@
   {
     "date": "2025-03-30",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.03.02",
     "spec_date": "2025-03-04",
     "spec_ref": "6fab37fe4168",
@@ -743,6 +912,7 @@
   {
     "date": "2025-03-30",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.03.02",
     "spec_date": "2025-03-04",
     "spec_ref": "78ec04149909",
@@ -756,6 +926,7 @@
   {
     "date": "2025-03-30",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.03.02",
     "spec_date": "2025-03-04",
     "spec_ref": "74f00528f070",
@@ -769,6 +940,7 @@
   {
     "date": "2025-04-25",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.03.02",
     "spec_date": "2025-03-04",
     "spec_ref": "fb2b469ccaf6",
@@ -782,6 +954,7 @@
   {
     "date": "2025-05-04",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.03.02",
     "spec_date": "2025-03-04",
     "spec_ref": "8904028792ba",
@@ -795,6 +968,7 @@
   {
     "date": "2025-05-14",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.03.02",
     "spec_date": "2025-03-04",
     "spec_ref": "a382446f70b5",
@@ -808,6 +982,7 @@
   {
     "date": "2025-06-12",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.06.08",
     "spec_date": "2025-06-11",
     "spec_ref": "eba916c28be3",
@@ -821,6 +996,7 @@
   {
     "date": "2026-01-17",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.06.08",
     "spec_date": "2025-06-11",
     "spec_ref": "427d869f847f",
@@ -834,6 +1010,7 @@
   {
     "date": "2026-02-15",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.06.08",
     "spec_date": "2025-06-11",
     "spec_ref": "c49a19675193",
@@ -847,6 +1024,7 @@
   {
     "date": "2026-02-15",
     "isa": "x86-64",
+    "source": "xed-to-xml-export",
     "spec_version": "v2025.06.08",
     "spec_date": "2025-06-11",
     "spec_ref": "56fe1b1c228c",

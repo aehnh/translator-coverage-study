@@ -91,12 +91,35 @@ def main() -> int:
     check("Remill A64 DEF_ISEL count", len(r26), 682)
     check("Remill A64 DEF_ISEL set identical 2020 vs latest", r20 == r26, True)
 
+    # --- Intel-native (primary) x86 series -------------------------------------
+    # These pin the Intel measure itself: the size of xed_iform_enum_t at each dated
+    # upstream-XED anchor, independent of the third-party export.
+    expected_enum = {
+        "2019": 6339, "2020": 6398, "2021": 6866, "2022": 6958,
+        "2023": 8074, "2024": 8955, "2025": 8863, "2026": 9002,
+    }
+    manifest = {r["label"]: r for r in count_xed.x86_manifest()}
+    for label, want in expected_enum.items():
+        if label in manifest:
+            check(f"Intel xed_iform_enum @{label} ({manifest[label]['xed_version']})",
+                  len(count_xed.load_enum_iforms(label)), want)
+
+    if manifest:
+        runtime = REPO / "external/remill/lib/Arch/X86/Runtime/Instructions.cpp"
+        for label, want in (("2020", 2027), ("2025", 2040)):
+            if label in manifest:
+                s_ = cov_x86.coverage_against(count_xed.load_enum_iforms(label), runtime)
+                check(f"Remill covers Intel x86 @{label}", s_["supported_iforms"], want)
+
     # --- series file contains the anchors --------------------------------------
     csv_path = REPO / "data" / "series.csv"
     if csv_path.is_file():
         rows = list(csv.DictReader(csv_path.open(encoding="utf-8")))
-        x86 = [r for r in rows if r["isa"] == "x86-64"]
+        x86 = [r for r in rows if r["isa"] == "x86-64" and r["source"] == "xed-to-xml-export"]
         a64 = [r for r in rows if r["isa"] == "a64"]
+        intel = [r for r in rows if r["source"] == "intel-xed-enum"]
+        if intel:
+            check("series: intel x86 latest ISA size", int(intel[-1]["isa_instruction_count"]), 9002)
         check("series: x86-64 latest ISA size", int(x86[-1]["isa_instruction_count"]), 8465)
         check("series: x86-64 latest covered", int(x86[-1]["remill_covered_count"]), 1919)
         check("series: a64 first ISA size (2019-12)", int(a64[0]["isa_instruction_count"]), 2336)
@@ -105,6 +128,19 @@ def main() -> int:
               anchor and int(anchor[0]["isa_instruction_count"]) == 6135, True)
     else:
         print("[SKIP] data/series.csv not built yet")
+
+    ann = REPO / "data" / "series_annual.csv"
+    if ann.is_file():
+        arows = list(csv.DictReader(ann.open(encoding="utf-8")))
+        years = {(r["source"], r["isa"]): sorted(int(x["year"]) for x in arows
+                                                 if (x["source"], x["isa"]) == (r["source"], r["isa"]))
+                 for r in arows}
+        check("annual grid: intel x86 covers 2020-2025",
+              years.get(("intel-xed-enum", "x86-64")), list(range(2020, 2026)))
+        check("annual grid: a64 covers 2020-2025",
+              years.get(("arm-mra", "a64")), list(range(2020, 2026)))
+        check("annual grid: xed-to-xml export is missing 2023 (not interpolated)",
+              2023 not in years.get(("xed-to-xml-export", "x86-64"), []), True)
 
     print()
     if failures:

@@ -11,6 +11,8 @@ time series is built from.
 from __future__ import annotations
 
 import argparse
+import csv
+import gzip
 import re
 import subprocess
 import sys
@@ -153,6 +155,33 @@ def xed_datafiles_date(commit: str) -> str | None:
     return out or None
 
 
+# ---------------------------------------------------------------------------
+# Intel-native measure: the iform set Intel's own XED generates (xed_iform_enum_t),
+# captured from pristine upstream-XED builds by scripts/extract_x86_specs.sh.
+# ---------------------------------------------------------------------------
+
+X86_SPEC_DIR = Path("specs/x86")
+
+
+def x86_manifest() -> list[dict[str, str]]:
+    """One record per dated upstream-XED anchor, oldest first."""
+    path = repo_root() / X86_SPEC_DIR / "manifest.csv"
+    if not path.is_file():
+        return []
+    with path.open(encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    return sorted(rows, key=lambda r: r["intel_date"])
+
+
+def load_enum_iforms(label: str) -> set[str]:
+    """Intel's iform set at one anchor."""
+    path = repo_root() / X86_SPEC_DIR / label / "iforms.txt.gz"
+    if not path.is_file():
+        raise FileNotFoundError(f"missing Intel iform set: {path}")
+    with gzip.open(path, "rt", encoding="utf-8") as fh:
+        return {line.strip() for line in fh if line.strip()}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Count x86-64 iforms from XED-to-XML snapshots."
@@ -169,6 +198,11 @@ def parse_args() -> argparse.Namespace:
         help="Count iforms at an arbitrary XED-to-XML commit. May be repeated.",
     )
     parser.add_argument(
+        "--intel",
+        action="store_true",
+        help="Count Intel's own xed_iform_enum_t at every anchor in specs/x86/.",
+    )
+    parser.add_argument(
         "--history",
         action="store_true",
         help="Count iforms at every commit that touched instructions.xml.",
@@ -178,6 +212,13 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+
+    if args.intel:
+        for rec in x86_manifest():
+            n = len(load_enum_iforms(rec["label"]))
+            print(f"{rec['intel_date']} {rec['label']}  xed={rec['xed_version']:<14} "
+                  f"{n} x86-64 iforms (Intel xed_iform_enum_t)")
+        return 0
 
     if args.history:
         for commit, date in instructions_xml_history():

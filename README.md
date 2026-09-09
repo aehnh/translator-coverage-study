@@ -14,19 +14,29 @@ nix develop
 
 ## Headline
 
+Both ISAs are measured from the **vendor's own machine-readable specification**, and
 Remill is held **fixed at its latest checkout**, so the series isolates one variable:
 the target moved.
 
-| ISA | first point | last point | ISA growth | Remill covers |
-|---|---|---|---|---|
-| x86-64 | 2019-01: 6092 iforms, 31.30% covered | 2026-02: 8465 iforms, 22.67% covered | +39% | 1907 -> 1919 (+0.6%) |
-| A64 | 2019-12: 2336 encodings, 16.27% covered | 2026-06: 4332 encodings, 8.77% covered | +85% | 380 -> 380 (unchanged) |
+Presentation grid - **one point per calendar year, 2020-2025, taking the last release
+the vendor published in that year** (the same rule for both ISAs):
 
-The covered-instruction count is essentially a flat line in both cases while the ISA
-grows underneath it, so coverage falls purely because the denominator moves.
+| year | x86-64 iforms | Remill | coverage | A64 encodings | Remill | coverage |
+|---|---|---|---|---|---|---|
+| 2020 | 6398 | 2027 | 31.68% | 2343 | 380 | 16.22% |
+| 2021 | 6866 | 2029 | 29.55% | 2462 | 380 | 15.43% |
+| 2022 | 6958 | 2027 | 29.13% | 3613 | 380 | 10.52% |
+| 2023 | 8074 | 2030 | 25.14% | 3762 | 380 | 10.10% |
+| 2024 | 8955 | 2029 | 22.66% | 4296 | 380 | 8.85% |
+| 2025 | 8863 | 2040 | 23.02% | 4331 | 380 | 8.77% |
+
+The covered-instruction count is a flat line in both cases while the ISA grows
+underneath it, so coverage falls purely because the denominator moves: x86-64
+31.68% -> 23.02% and A64 16.22% -> 8.77% over the same six years.
 
 Figure: `figures/coverage_series.svg` (LaTeX table: `figures/coverage_series.tex`).
-Data: `data/series.csv`, `data/series.json`.
+Data: `data/series_annual.csv` (presentation grid) and `data/series.csv` (full
+density - every measured point, nothing discarded).
 
 ## Reproducing
 
@@ -51,12 +61,23 @@ normally needed.
 
 ## What is counted
 
-**x86-64 - one distinct `iform=` value in XED-to-XML's `instructions.xml`.**
-`external/XED-to-XML` is a fork of `intelxed/xed` that additionally commits a
-generated `instructions.xml` covering the variants usable in 64-bit mode.  It has
-full git history, so the identical measurement can be taken at any past commit.  The
-series samples **every commit that touched `instructions.xml`** (41 commits,
-2019-01-10 to 2026-02-15).
+**x86-64 (primary) - one entry in Intel's own `xed_iform_enum_t`.**  Building
+pristine upstream XED at a dated commit generates `xed-iform-enum.h`, Intel's
+enumeration of every x86 iform it decodes.  `scripts/extract_x86_specs.sh` builds one
+anchor per calendar year - the newest commit Intel had published by the end of that
+year - and stores the resulting name sets in `specs/x86/<year>/iforms.txt.gz`
+(manifest: `specs/x86/manifest.csv`).  Each build takes ~90 s; the extracted sets are
+committed so the series rebuilds without them.
+
+**x86-64 (secondary) - one distinct `iform=` value in XED-to-XML's
+`instructions.xml`.**  `external/XED-to-XML` is a third-party fork of `intelxed/xed`
+that commits a generated `instructions.xml` covering the variants usable in 64-bit
+mode; it is what the paper's originally published x86 numbers came from.  It is
+retained as `source=xed-to-xml-export` because the contrast between what Intel defined
+and what a third-party exporter had actually published is itself a result - see
+caveat 5.  The two differ in unit (Intel's enum also counts iforms reachable only in
+16- and 32-bit modes, a stable ~200) and in currency (the export lagged APX by two
+years).
 
 **A64 - one `__encoding` entry in the `__decode A64` tree.**  ARM publishes the
 machine-readable architecture specification as one XML tarball per quarterly release.
@@ -64,10 +85,18 @@ machine-readable architecture specification as one XML tarball per quarterly rel
 encoding.  The series samples **every ARM release we could retrieve** (25 releases,
 2019-12 to 2026-06), one point per release.
 
-Sampling is per release boundary, not on a calendar grid, because ISA growth is a step
-function: the count is constant between releases and jumps at one.  Interpolating
-monthly points would invent data.  `is_change_point` in the CSV marks the rows where
-the count actually changed.
+`data/series.csv` samples **every** release: 25 ARM releases, 41 XED-to-XML snapshots
+and 8 dated Intel XED anchors, with a `source` column distinguishing `arm-mra`,
+`intel-xed-enum` and `xed-to-xml-export`.  Sampling is per release boundary, not on a
+calendar grid, because ISA growth is a step function: the count is constant between
+releases and jumps at one.  `is_change_point` marks rows where the count changed.
+
+`data/series_annual.csv` is the **presentation** downsample used by the figure and the
+paper table: one point per calendar year, 2020-2025, taking the last release the
+vendor published that year - the same rule for both ISAs.  A year with no obtainable
+release is left absent rather than interpolated, which is why the secondary
+XED-to-XML curve has a visible break at 2023.  Nothing measured is discarded;
+`data/series.csv` remains the record.
 
 ## Coverage definition
 
@@ -89,10 +118,12 @@ commit that existed then.  Both are provided; the fixed one is the headline beca
 * **For A64 the two series are identical point for point** even though the
   contemporaneous run really does use 24 distinct dated Remill commits across the 25
   points: every one of them covers exactly 380 encodings.
-* **For x86 it only moves the starting point.**  Contemporaneous Remill covers
-  1628 iforms in 2019 rising to 1885 in 2026 (vs. 1907 -> 1919 fixed).  Coverage still
-  falls, 26.72% -> 22.27%.  Fixing Remill at its latest is the *charitable* choice: it
-  credits the lifter with work it had not yet done at the earlier dates.
+* **For x86 it only moves the level, not the trend.**  Against the Intel measure,
+  contemporaneous Remill covers 1800 iforms in 2020 rising to 2003 in 2025 (vs.
+  2027 -> 2040 fixed); coverage still falls, 28.13% -> 22.60%.  Fixing Remill at its
+  latest is the *charitable* choice: it credits the lifter with work it had not yet
+  done at the earlier dates.  `data/series_annual_remill_contemporaneous.csv` carries
+  the annual grid for that variant.
 
 ## Known gaps and caveats
 
@@ -171,10 +202,21 @@ Read these before quoting a number.
    32-bit modes, which XED-to-XML deliberately excludes - but that difference is a
    stable ~200 in every year the exporter was current.  The 2130 at v2024.11.04 is not
    that: XED 2023.12 already defined **1233 new iforms, 1062 of them APX**, and the
-   fork's 2024.11-based export contains only 138 of them.  The APX jump the series
-   shows in May 2025 happened in Intel's XED by December 2023.  Any claim about x86
-   ISA size in 2023-2024 should use the Intel column, not the export column.
-6. **x86 has a 2022-11 to 2025-03 hole.**  XED-to-XML did not regenerate
+   fork's 2024.11-based export contains only 138 of them.  The APX jump the export
+   shows in May 2025 happened in Intel's XED by December 2023.  **This is why the
+   Intel enum is the primary measure**; the export is kept only as a labelled
+   secondary curve.
+
+   Regenerating the export at 2023/2024 XED was tried and rejected as unsound: the
+   XED-to-XML generator is a patch to XED's own `pysrc/generator.py` and does not port
+   across XED versions in either direction (the 2024-era generator fails on 2022 XED
+   with an `ImportError`; the 2022-era generator fails on 2023/2024 XED in
+   decoder generation), and 3-way merges leave 9-24 conflicts in the very file that
+   produces the measurement.  Filling 2023 that way would mean hand-authoring a merge
+   that never existed and publishing its output as data.
+6. **The secondary XED-to-XML series has a 2022-11 to 2025-03 hole.**  This affects
+   only `source=xed-to-xml-export`; the primary Intel series has a point in every year
+   2019-2026.  XED-to-XML did not regenerate
    `instructions.xml` for 28 months; upstream Intel XED kept releasing.  The gap is in
    the *measurement*, not the ISA.  The `spec_version` column records which upstream XED
    release each snapshot was generated from - e.g. the 2025-03-24 snapshot is built on
