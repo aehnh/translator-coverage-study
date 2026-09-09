@@ -20,7 +20,7 @@ the target moved.
 | ISA | first point | last point | ISA growth | Remill covers |
 |---|---|---|---|---|
 | x86-64 | 2019-01: 6092 iforms, 31.30% covered | 2026-02: 8465 iforms, 22.67% covered | +39% | 1907 -> 1919 (+0.6%) |
-| A64 | 2019-12: 2336 encodings, 16.27% covered | 2023-12: 3762 encodings, 10.10% covered | +61% | 380 -> 380 (unchanged) |
+| A64 | 2019-12: 2336 encodings, 16.27% covered | 2026-06: 4332 encodings, 8.77% covered | +85% | 380 -> 380 (unchanged) |
 
 The covered-instruction count is essentially a flat line in both cases while the ISA
 grows underneath it, so coverage falls purely because the denominator moves.
@@ -46,7 +46,7 @@ python3 scripts/calculate_remill_a64_coverage.py
 ```
 
 `scripts/fetch_a64_specs.sh` rebuilds `specs/a64/` from ARM's published XML
-(~620 MB of downloads); the generated decode trees are committed so this is not
+(~915 MB of downloads); the generated decode trees are committed so this is not
 normally needed.
 
 ## What is counted
@@ -61,8 +61,8 @@ series samples **every commit that touched `instructions.xml`** (41 commits,
 **A64 - one `__encoding` entry in the `__decode A64` tree.**  ARM publishes the
 machine-readable architecture specification as one XML tarball per quarterly release.
 `external/mra_tools` converts a release into ASL; the decode tree names every A64
-encoding.  The series samples **every ARM release we could retrieve** (17 releases,
-2019-12 to 2023-12), one point per release.
+encoding.  The series samples **every ARM release we could retrieve** (25 releases,
+2019-12 to 2026-06), one point per release.
 
 Sampling is per release boundary, not on a calendar grid, because ISA growth is a step
 function: the count is constant between releases and jumps at one.  Interpolating
@@ -86,6 +86,9 @@ commit that existed then.  Both are provided; the fixed one is the headline beca
 * **For A64 the choice is a no-op.**  Remill's AArch64 `DEF_ISEL` set has been
   **byte-identical since mid-2018** - 682 names, and the 2020 and 2026 checkouts differ
   by zero entries.  The two A64 series are therefore numerically identical.
+* **For A64 the two series are identical point for point** even though the
+  contemporaneous run really does use 24 distinct dated Remill commits across the 25
+  points: every one of them covers exactly 380 encodings.
 * **For x86 it only moves the starting point.**  Contemporaneous Remill covers
   1628 iforms in 2019 rising to 1885 in 2026 (vs. 1907 -> 1919 fixed).  Coverage still
   falls, 26.72% -> 22.27%.  Fixing Remill at its latest is the *charitable* choice: it
@@ -101,23 +104,36 @@ Read these before quoting a number.
    both `arch8.6` and `arch9.7`.  The 380 values are what `check_regression.py`
    asserts.  Every other originally published number (6135, 8465, 2336, 4331, 1635,
    1919) reproduces exactly.
-2. **A64 runs 2019-12 to 2023-12 and no further in either direction.**
-   ARM published the first machine-readable architecture specification on
-   **2017-04-20**, for Armv8.2-A, so no A64 point earlier than that can exist at all -
-   2016 is impossible in principle, not just in practice.  The 2017-04 to 2019-09
-   releases did exist but their tarballs are no longer served: probing
-   `.../armv8-a-architecture/<date>/{A64_ISA_xml,ISA_A64_xml}_{v82A..v89A,A_profile}-<date>.tar.gz`
-   across every quarter from 2017-04 returns 404 until 2019-12.  At the other end,
-   releases from 2024-03 onward are gone from both historical paths
-   (`.../armv8-a-architecture/...` and `.../armv9-a-architecture/...`), and the current
-   developer.arm.com download pages serve only a redirect stub to automated fetchers.
-   (`developer.arm.com/documentation/ddi0602/<date>/` is not usable as a release index:
-   it returns HTTP 200 for any string, including `notadate`.)
-3. **`external/arch9.7` is undated.**  It is a real, newer ARM release (4331
-   encodings) but we could not obtain the matching tarball, so it is not placed on the
-   time axis.  Its feature set (`FEAT_CMPBR`, `FEAT_LSFE`, `FEAT_FPRCVT`, `FEAT_SVE2p2`,
-   `FEAT_SME2p2`, `FEAT_SRMASK`, `FEAT_UINJ`) puts it at 2024-12 or later.  It is used
-   only as the undated endpoint anchor in `check_regression.py`.
+2. **A64 runs 2019-12 to 2026-06; nothing earlier is obtainable, and two releases in
+   the middle are missing.**  ARM published the first machine-readable architecture
+   specification on **2017-04-20**, for Armv8.2-A (build `00bet3.1`), so no A64 point
+   earlier than that can exist at all - 2016 is impossible in principle, not just in
+   practice.  The 2017-04 to 2019-09 releases did exist but are not served any more:
+   probing every quarter from 2017-04 across both filename prefixes and all version
+   labels returns 404 until 2019-12.  **2024-03 and 2025-03 are the only gaps inside
+   the covered range** - both releases exist, but neither ARM's CDN nor the Wayback
+   Machine has a copy under any filename we could find.  Nothing is interpolated
+   across them.
+
+   ARM moved the download location three times, which is why the fetch script has
+   three URL shapes:
+
+   | releases | location |
+   |---|---|
+   | 2019-12 .. 2021-12 | `.../armv8-a-architecture/<date>/` |
+   | 2022-03 .. 2023-12 | `.../armv9-a-architecture/<date>/` |
+   | 2024-06 .. 2026-06 | `/-/cdn-downloads/permalink/Exploration-Tools-A64-ISA/ISA_A64/` |
+
+   The permalink directory only keeps the most recent few releases (2025-09 onward at
+   time of writing); 2024-06 .. 2025-06 come from the Wayback Machine's `id_` replay,
+   which returns the original gzip body.  `developer.arm.com/documentation/ddi0602/<date>/`
+   looks like a release index but is not usable as one: it returns HTTP 200 for any
+   string, including `notadate`.
+3. **`external/arch9.7` is the 2025-09 / 2025-12 / 2026-03 A64 encoding set.**  Those
+   three consecutive releases have *identical* A64 encoding sets (4331), and each is
+   byte-identical to `arch9.7`, so the encoding count alone cannot single one out.  The
+   series carries all three as separate dated points; `arch9.7` is retained only as the
+   original anchor in `check_regression.py`.
 4. **The 2020-09 A64 count dips to 2311.**  This is real, not a tooling artefact:
    ARM's 2020-09 release ships 1252 instruction XML files against 1270 in 2020-06 and
    1276 in 2020-12, with the SVE matrix/BF16 files (`bfdot_z_*`, `*mmla_z_*`, `ld1ro*`)

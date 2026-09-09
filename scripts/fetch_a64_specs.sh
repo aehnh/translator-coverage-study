@@ -7,7 +7,7 @@
 # yields the identical variant set), run mra_tools over the canonical XML directory,
 # and keep just the generated decode tree.
 #
-# Total download for the full set is ~620 MB.  Already-built releases are skipped.
+# Total download for the full set is ~915 MB.  Already-built releases are skipped.
 #
 # Usage: scripts/fetch_a64_specs.sh [YYYY-MM ...]      (default: every known release)
 set -euo pipefail
@@ -16,11 +16,16 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CACHE="${A64_XML_CACHE:-$ROOT/.work/armxml}"
 MRA="$ROOT/external/mra_tools"
 
-# release -> download URL.  ARM moved hosts twice: the v8.x releases live under
-# armv8-a-architecture, the A-profile releases under armv9-a-architecture.  Releases
-# from 2024-03 onward are no longer served from either path (see README).
+# release -> download URL.  ARM moved hosts three times:
+#   v8.x releases            .../armv8-a-architecture/<date>/
+#   A-profile 2022..2023     .../armv9-a-architecture/<date>/
+#   A-profile 2024 onward    /-/cdn-downloads/permalink/Exploration-Tools-A64-ISA/ISA_A64/
+# The CDN permalink directory only keeps the most recent few releases; older ones are
+# fetched from the Wayback Machine's `id_` replay, which serves the original gzip body.
 BASE8="https://developer.arm.com/-/media/developer/products/architecture/armv8-a-architecture"
 BASE9="https://developer.arm.com/-/media/developer/products/architecture/armv9-a-architecture"
+PERMA="https://developer.arm.com/-/cdn-downloads/permalink/Exploration-Tools-A64-ISA/ISA_A64"
+WB="https://web.archive.org/web"
 
 url_for() {
   case "$1" in
@@ -35,12 +40,23 @@ url_for() {
     2021-12) echo "$BASE8/2021-12/ISA_A64_xml_v88A-2021-12.tar.gz" ;;
     2022-03|2022-06|2022-09|2022-12|2023-03|2023-06|2023-09|2023-12)
              echo "$BASE9/$1/ISA_A64_xml_A_profile-$1.tar.gz" ;;
+    # dropped from the CDN; only the Wayback captures below still serve these
+    2024-06) echo "$WB/20240801085414id_/$PERMA/ISA_A64_xml_A_profile-2024-06.tar.gz" ;;
+    2024-09) echo "$WB/20241006084943id_/$PERMA/ISA_A64_xml_A_profile-2024-09.tar.gz" ;;
+    2024-12) echo "$WB/20241219033157id_/$PERMA/ISA_A64_xml_A_profile-2024-12.tar.gz" ;;
+    2025-06) echo "$WB/20250725042908id_/$PERMA/ISA_A64_xml_A_profile-2025-06.tar.gz" ;;
+    # still live on the CDN permalink directory
+    2025-09) echo "$PERMA/ISA_A64_xml_A_profile-2025-09_ASL0.tar.gz" ;;
+    2025-12|2026-03|2026-06)
+             echo "$PERMA/ISA_A64_xml_A_profile-$1.tar.gz" ;;
+    # 2024-03 and 2025-03 exist but no retrievable copy was found anywhere
     *) return 1 ;;
   esac
 }
 
 ALL="2019-12 2020-03 2020-06 2020-09 2020-12 2021-03 2021-06 2021-09 2021-12 \
-2022-03 2022-06 2022-09 2022-12 2023-03 2023-06 2023-09 2023-12"
+2022-03 2022-06 2022-09 2022-12 2023-03 2023-06 2023-09 2023-12 \
+2024-06 2024-09 2024-12 2025-06 2025-09 2025-12 2026-03 2026-06"
 
 # mra_tools aborts on releases that ship alias iclasses without pseudocode (2020-09).
 if ! grep -q "alias iclass with no decode pseudocode" "$MRA/bin/instrs2asl.py"; then
@@ -74,7 +90,7 @@ for rel in "${@:-$ALL}"; do
   # Each tarball also ships the PREVIOUS release's directory and an _OPT (beta)
   # directory; the canonical one is ISA_A64_xml_<ver>-<release> with no suffix.
   xd=""
-  for d in "$tmp"/ISA_A64_xml_*-"$rel"; do
+  for d in "$tmp"/ISA_A64_xml_*-"$rel" "$tmp"/ISA_A64_xml_*-"$rel"_ASL0; do
     [ -f "$d/encodingindex.xml" ] || continue
     case "$(basename "$d")" in *_OPT|*diff*) continue;; esac
     xd="$d"; break

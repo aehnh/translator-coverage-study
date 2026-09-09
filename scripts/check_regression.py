@@ -66,6 +66,13 @@ def main() -> int:
         anchor = count_asl.load_a64_variants("2020-03")
         check("specs/a64/2019-12 variant set == external/arch8.6", regen == anchor, True)
 
+    # arch9.7's encoding set is shared by the 2025-09 / 2025-12 / 2026-03 releases
+    for release in ("2025-09", "2025-12", "2026-03"):
+        if release in count_asl.available_releases():
+            got = count_asl.extract_a64_variants(count_asl.resolve_decode_file(release))
+            check(f"specs/a64/{release} variant set == external/arch9.7",
+                  got == count_asl.load_a64_variants("2026"), True)
+
     # --- Remill coverage -------------------------------------------------------
     x86_2020 = cov_x86.coverage_summary("2020-03", "c++", False)
     x86_2026 = cov_x86.coverage_summary("2026", "c++", False)
