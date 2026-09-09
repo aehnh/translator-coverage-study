@@ -138,16 +138,52 @@ Read these before quoting a number.
    ARM's 2020-09 release ships 1252 instruction XML files against 1270 in 2020-06 and
    1276 in 2020-12, with the SVE matrix/BF16 files (`bfdot_z_*`, `*mmla_z_*`, `ld1ro*`)
    absent.  All 31 missing encodings return in 2020-12.
-5. **x86 has a 2022-11 to 2025-03 hole.**  XED-to-XML did not regenerate
+5. **The x86 series is an *export* curve, not Intel's ISA curve - and it lags.**
+   `data/series.csv` now carries `spec_version` (the XED `VERSION` string the snapshot
+   was built from) and `spec_date` (the date of the newest non-merge commit touching
+   XED's `datafiles/`, i.e. when Intel last changed the ISA tables that snapshot
+   contains).  `spec_date` rather than VERSION is the honest content date: VERSION only
+   moves at XED releases, so the fork's "13.0.0" snapshot reports February 2021 while
+   actually carrying July 2021 datafiles - and it has 6661 iforms, more than the
+   13.0.0 release itself.
+
+   Dating by Intel's cadence rather than the fork's changes the picture: XED-to-XML's
+   2025-03-24 snapshot really carries XED **v2024.11.04** content (2024-11-05), so on
+   an Intel axis the x86 points fall at 2019-01, 2019-10, 2020-04, 2020-11, 2021-07,
+   2022-10, 2024-11, 2025-03 and 2025-06 - an annual grid with exactly **one** hole,
+   2023, not the two the fork's own dates suggest.
+
+   Worse than the date lag is a *content* lag.  `scripts/xed_native_compare.py`
+   (data: `data/xed_native_comparison.csv`) builds pristine upstream XED and counts
+   Intel's own `xed_iform_enum_t`:
+
+   | XED version | Intel date | Intel iform enum | XED-to-XML exported | diff |
+   |---|---|---|---|---|
+   | 8.30.0 | 2019-01-02 | 6293 | 6092 | 201 |
+   | 11.0.1 | 2019-08-21 | 6339 | 6135 | 204 |
+   | 12.0.1 | 2020-11-06 | 6398 | 6193 | 205 |
+   | v2022.10.11 | 2022-10-12 | 6958 | 6755 | 203 |
+   | v2023.12.19 | 2023-12-20 | 8074 | *(never exported)* | - |
+   | v2024.11.04 | 2024-11-05 | 8955 | 6825 | **2130** |
+   | v2025.06.08 | 2025-06-11 | 8694 | 8465 | 229 |
+
+   Intel's enum is a different unit - it includes iforms reachable only in 16- and
+   32-bit modes, which XED-to-XML deliberately excludes - but that difference is a
+   stable ~200 in every year the exporter was current.  The 2130 at v2024.11.04 is not
+   that: XED 2023.12 already defined **1233 new iforms, 1062 of them APX**, and the
+   fork's 2024.11-based export contains only 138 of them.  The APX jump the series
+   shows in May 2025 happened in Intel's XED by December 2023.  Any claim about x86
+   ISA size in 2023-2024 should use the Intel column, not the export column.
+6. **x86 has a 2022-11 to 2025-03 hole.**  XED-to-XML did not regenerate
    `instructions.xml` for 28 months; upstream Intel XED kept releasing.  The gap is in
    the *measurement*, not the ISA.  The `spec_version` column records which upstream XED
    release each snapshot was generated from - e.g. the 2025-03-24 snapshot is built on
    XED 2024.11.04 - so the AVX10 and APX jumps that appear in 2025 correspond to ISA
    content Intel published earlier.  Nothing was interpolated to fill the hole.
-6. **One x86 point is non-monotonic**: 2025-05-14 reports 8612 iforms and the next
+7. **One x86 point is non-monotonic**: 2025-05-14 reports 8612 iforms and the next
    snapshot 8465.  That is an APX commit later reconciled against upstream, and it is
    left in the data as measured.
-7. **`external/mra_tools` is patched** by `patches/mra_tools-missing-ps.patch` so that
+8. **`external/mra_tools` is patched** by `patches/mra_tools-missing-ps.patch` so that
    alias iclasses shipped without pseudocode (2020-09) do not abort the run.  The patch
    is verified inert: regenerating releases that do not need it produces byte-identical
    decode trees, and the 2019-12 release reproduces `external/arch8.6`'s variant set

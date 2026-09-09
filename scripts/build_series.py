@@ -52,6 +52,7 @@ FIELDS = [
     "date",
     "isa",
     "spec_version",
+    "spec_date",
     "spec_ref",
     "isa_instruction_count",
     "remill_ref",
@@ -141,6 +142,7 @@ def build_a64(mode: str, trees: RemillTrees, cxx: str) -> list[dict]:
             "date": f"{release}-01",
             "isa": "a64",
             "spec_version": release,
+            "spec_date": f"{release}-01",
             "spec_ref": f"specs/a64/{release}",
             "isa_instruction_count": s["total_variants"],
             "remill_ref": commit[:12],
@@ -172,10 +174,12 @@ def build_x86(mode: str, trees: RemillTrees, cxx: str) -> list[dict]:
             rcommit, rdate, runtime = head_commit, head_date, default_runtime
 
         s = cov_x86.coverage_against(iforms, runtime, cxx, False)
+        xed_version = count_xed.xed_version_at_commit(commit) or ""
         rows.append({
             "date": date,
             "isa": "x86-64",
-            "spec_version": count_xed.underlying_xed_release(commit) or "",
+            "spec_version": xed_version,
+            "spec_date": count_xed.xed_datafiles_date(commit) or "",
             "spec_ref": commit[:12],
             "isa_instruction_count": s["total_iforms"],
             "remill_ref": rcommit[:12],

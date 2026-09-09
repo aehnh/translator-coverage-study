@@ -104,6 +104,55 @@ def underlying_xed_release(commit: str) -> str | None:
     return None
 
 
+def xed_version_at_commit(commit: str) -> str | None:
+    """Intel's own XED version string (the VERSION file) at a XED-to-XML commit.
+
+    This is the Intel-native identity of a snapshot: it says which XED - and so which
+    Intel ISA drop - the committed instructions.xml was generated from, independently
+    of when the fork got round to regenerating it.
+    """
+    try:
+        v = _git("show", f"{commit}:VERSION").strip()
+    except RuntimeError:
+        return None
+    return v or None
+
+
+_VERSION_DATE_CACHE: dict[str, str | None] = {}
+
+
+def xed_version_date(version: str) -> str | None:
+    """Date upstream XED first set VERSION to `version` - i.e. that release's date."""
+    if version not in _VERSION_DATE_CACHE:
+        try:
+            out = _git("log", "--format=%ad", "--date=short", "-S", version, "--", "VERSION")
+        except RuntimeError:
+            _VERSION_DATE_CACHE[version] = None
+        else:
+            rows = [line.strip() for line in out.splitlines() if line.strip()]
+            _VERSION_DATE_CACHE[version] = rows[-1] if rows else None
+    return _VERSION_DATE_CACHE[version]
+
+
+def xed_datafiles_date(commit: str) -> str | None:
+    """Date of the newest non-merge commit touching XED's ISA tables at `commit`.
+
+    This is the Intel-native date of a snapshot's *content*.  It is preferred over the
+    VERSION file, which only changes at XED releases: a snapshot sitting on a
+    post-release development commit still reports the older VERSION (the fork's
+    "13.0.0" snapshot really carries July 2021 datafiles, and has more iforms than the
+    February 2021 13.0.0 release does).  datafiles/ holds Intel's ISA tables and the
+    fork edits them essentially never (one line, in xed-amd-prefetch.txt).
+    """
+    try:
+        out = _git("log", "-1", "--no-merges", "--format=%ad", "--date=short",
+                   commit, "--", "datafiles/")
+    except RuntimeError:
+        return None
+    out = out.strip()
+    return out or None
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Count x86-64 iforms from XED-to-XML snapshots."
@@ -133,8 +182,10 @@ def main() -> int:
     if args.history:
         for commit, date in instructions_xml_history():
             iforms = load_iforms_at_commit(commit)
-            release = underlying_xed_release(commit) or "-"
-            print(f"{date} {commit[:8]} xed={release:<10} {len(iforms)} x86-64 iforms")
+            version = xed_version_at_commit(commit) or "?"
+            ddate = xed_datafiles_date(commit) or "?"
+            print(f"{date} {commit[:8]} xed={version:<22} intel_content={ddate:<11} "
+                  f"{len(iforms)} x86-64 iforms")
         return 0
 
     if args.commit:
