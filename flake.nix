@@ -21,10 +21,14 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             python3
-            gcc
+            gcc          # scripts/calculate_remill_x86-64_coverage.py preprocesses C++
             gnumake
             binutils
-            git
+            git          # scripts/count_xed_instructions.py reads XED-to-XML history
+            curl         # scripts/fetch_a64_specs.sh downloads ARM's ISA XML
+            gzip
+            gnutar
+            librsvg      # optional: rasterise figures/coverage_series.svg
             pkg-config
           ];
 
