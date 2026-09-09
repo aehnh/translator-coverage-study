@@ -156,16 +156,18 @@ def main() -> int:
         years = {(r["source"], r["isa"]): sorted(int(x["year"]) for x in arows
                                                  if (x["source"], x["isa"]) == (r["source"], r["isa"]))
                  for r in arows}
-        check("annual grid: intel x86 covers 2020-2025",
-              years.get(("intel-xed-enum", "x86-64")), list(range(2020, 2026)))
-        check("annual grid: a64 covers 2020-2025",
-              years.get(("arm-mra", "a64")), list(range(2020, 2026)))
+        check("annual grid: intel x86 covers 2019-2025",
+              years.get(("intel-xed-enum", "x86-64")), list(range(2019, 2026)))
+        check("annual grid: a64 covers 2019-2025",
+              years.get(("arm-mra", "a64")), list(range(2019, 2026)))
         check("annual grid: xed-to-xml export is missing 2023 (not interpolated)",
               2023 not in years.get(("xed-to-xml-export", "x86-64"), []), True)
 
         # the PRIMARY (contemporaneous) numbers the paper table quotes
         idx = {(r["source"], int(r["year"])): r for r in arows}
         for key, want_isa, want_cov, want_pct in (
+            (("intel-xed-enum", 2019), 6339, 1752, "27.64"),
+            (("arm-mra", 2019), 2336, 380, "16.27"),
             (("intel-xed-enum", 2020), 6398, 1800, "28.13"),
             (("intel-xed-enum", 2025), 8863, 2003, "22.6"),
             (("arm-mra", 2020), 2343, 380, "16.22"),

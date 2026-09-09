@@ -22,11 +22,12 @@ it.  (Holding Remill fixed at its latest checkout instead would draw today's lif
 against every past year and hide exactly that; it is kept as a sensitivity check in
 the `*_fixed` columns of `data/`.)
 
-Presentation grid - **one point per calendar year, 2020-2025, taking the last release
+Presentation grid - **one point per calendar year, 2019-2025, taking the last release
 the vendor published in that year** (the same rule for both ISAs):
 
 | year | x86-64 iforms | Remill | coverage | A64 encodings | Remill | coverage |
 |---|---|---|---|---|---|---|
+| 2019 | 6339 | 1752 | 27.64% | 2336 | 380 | 16.27% |
 | 2020 | 6398 | 1800 | 28.13% | 2343 | 380 | 16.22% |
 | 2021 | 6866 | 1798 | 26.19% | 2462 | 380 | 15.43% |
 | 2022 | 6958 | 1818 | 26.13% | 3613 | 380 | 10.52% |
@@ -34,11 +35,18 @@ the vendor published in that year** (the same rule for both ISAs):
 | 2024 | 8955 | 1816 | 20.28% | 4296 | 380 | 8.85% |
 | 2025 | 8863 | 2003 | 22.60% | 4331 | 380 | 8.77% |
 
-Over six years the x86-64 ISA grew **6398 -> 8863 (+39%)** while Remill went
-**1800 -> 2003 (+11%)**: the lifter really is being worked on, and still loses ground,
-28.13% -> 22.60%.  On A64 it does not move at all - **380 at every one of the six
-points** - while the ISA nearly doubles, 2343 -> 4331, so coverage almost halves,
-16.22% -> 8.77%.
+Over seven years the x86-64 ISA grew **6339 -> 8863 (+40%)** while Remill went
+**1752 -> 2003 (+14%)**: the lifter really is being worked on, and still loses ground,
+27.64% -> 22.60%.  On A64 it does not move at all - **380 at every one of the seven
+points** - while the ISA grows 2336 -> 4331 (+85%), so coverage almost halves,
+16.27% -> 8.77%.
+
+**The series starts in 2019 because that is where the data starts.**  ARM published
+its first machine-readable architecture specification in **2017-04** (Armv8.2-A), so
+nothing before that exists to measure; and its 2017-04 to 2019-09 releases are no
+longer served from any path we could find, so **2019-12 is the earliest obtainable A64
+release**.  On the x86 side 2019 is likewise the earliest anchor for which upstream
+XED builds cleanly here.
 
 That A64 flatness is a *measured* result of the contemporaneous pairing, not an
 artefact of the convention: the 25 A64 points are paired with **24 distinct dated
@@ -110,7 +118,7 @@ commit used, so the pairing is auditable), and `remill_covered_fixed` /
 `coverage_pct_fixed` the fixed-at-latest secondary.
 
 `data/series_annual.csv` is the **presentation** downsample used by the figure and the
-paper table: one point per calendar year, 2020-2025, taking the last release the
+paper table: one point per calendar year, 2019-2025, taking the last release the
 vendor published that year - the same rule for both ISAs.  A year with no obtainable
 release is left absent rather than interpolated, which is why the secondary
 XED-to-XML curve has a visible break at 2023.  Nothing measured is discarded;

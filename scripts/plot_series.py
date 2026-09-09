@@ -15,7 +15,7 @@ fixed-at-latest variant stays in data/ in the *_fixed columns as a sensitivity
 check; it is not plotted.
 
 Sampling rule, applied identically to both ISAs: one point per calendar year,
-2020-2025, taking the last release the vendor published in that year.  Full
+2019-2025, taking the last release the vendor published in that year.  Full
 density stays in data/series.csv; nothing is interpolated, so a year with no
 obtainable release leaves a break in the line.
 
@@ -41,7 +41,7 @@ C_COVER = "#eb6834"    # slot 2 - instructions Remill lifts
 
 ISA_TITLE = {"x86-64": "x86-64 — Intel XED iforms", "a64": "A64 — ARM ASL encodings"}
 PRIMARY = {"x86-64": "intel-xed-enum", "a64": "arm-mra"}
-YEARS = list(range(2020, 2026))
+YEARS = list(range(2019, 2026))
 
 
 def esc(s: str) -> str:
@@ -155,7 +155,7 @@ def main() -> int:
     xmin, xmax = YEARS[0] - 0.25, YEARS[-1] + 0.55
 
     PW, PH = 400, 250
-    W, H = 100 + len(isas) * (PW + 90), PH + 172
+    W, H = 100 + len(isas) * (PW + 90), PH + 206
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" '
            f'font-family="Inter, Helvetica, Arial, sans-serif">',
            f'<rect width="{W}" height="{H}" fill="{SURFACE}"/>',
@@ -170,7 +170,7 @@ def main() -> int:
         p = Panel(72 + k * (PW + 90), 96, PW, PH, xmin, xmax, max(r["n"] for r in rs) * 1.16)
         draw(out, p, ISA_TITLE[isa], rs)
 
-    ly = H - 22
+    ly = H - 52
     out.append(f'<g font-size="11.5" fill="{INK_2}">')
     for i, (colour, label) in enumerate([(C_SIZE, "ISA size (vendor specification)"),
                                          (C_COVER, "lifted by Remill")]):
@@ -178,7 +178,15 @@ def main() -> int:
         out.append(f'<line x1="{x}" y1="{ly-4}" x2="{x+22}" y2="{ly-4}" stroke="{colour}" stroke-width="2"/>')
         out.append(f'<circle cx="{x+11}" cy="{ly-4}" r="4" fill="{colour}" stroke="{SURFACE}" stroke-width="2"/>')
         out.append(f'<text x="{x+30}" y="{ly}" fill="{INK_2}">{esc(label)}</text>')
-    out.append("</g></svg>")
+    out.append("</g>")
+    for i, note in enumerate([
+        "The series starts in 2019 because that is where the data starts: ARM first published a "
+        "machine-readable specification in 2017-04 (Armv8.2-A),",
+        "and its 2017-04 to 2019-09 releases are no longer served, so 2019-12 is the earliest "
+        "obtainable A64 release. Nothing earlier exists to measure.",
+    ]):
+        out.append(f'<text x="72" y="{H-26+i*14}" font-size="10.5" fill="{INK_2}">{esc(note)}</text>')
+    out.append("</svg>")
 
     (REPO / args.out).parent.mkdir(parents=True, exist_ok=True)
     (REPO / args.out).write_text("\n".join(out) + "\n", encoding="utf-8")

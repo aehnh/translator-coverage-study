@@ -236,7 +236,7 @@ def build_x86(trees: RemillTrees, cxx: str) -> list[dict]:
     return _x86_rows(pts, trees, cxx, "xed-to-xml-export")
 
 
-ANNUAL_YEARS = range(2020, 2026)
+ANNUAL_YEARS = range(2019, 2026)
 
 
 def downsample_annual(rows: list[dict]) -> list[dict]:
@@ -244,6 +244,11 @@ def downsample_annual(rows: list[dict]) -> list[dict]:
 
     The same rule is applied to both ISAs so the grid is matched and reproducible.
     Years with no obtainable release are simply absent - nothing is interpolated.
+
+    The grid starts at 2019 because that is where the data starts, for both ISAs at
+    once: ARM's first machine-readable architecture specification is 2017-04 (Armv8.2-A)
+    and its 2017-04..2019-09 releases are no longer served anywhere, so 2019-12 is the
+    earliest A64 release obtainable; nothing before 2017-04 exists to measure.
     """
     best: dict[tuple, dict] = {}
     for r in rows:
@@ -266,7 +271,7 @@ def main() -> int:
     ap.add_argument("--out-csv", default="data/series.csv")
     ap.add_argument("--out-json", default="data/series.json")
     ap.add_argument("--out-annual", default="data/series_annual.csv",
-                    help="Downsampled presentation grid: last release of each year, 2020-2025.")
+                    help="Downsampled presentation grid: last release of each year, 2019-2025.")
     args = ap.parse_args()
 
     trees = RemillTrees()

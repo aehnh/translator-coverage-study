@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="422" viewBox="0 0 1080 422" font-family="Inter, Helvetica, Arial, sans-serif">
-<rect width="1080" height="422" fill="#fcfcfb"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="456" viewBox="0 0 1080 456" font-family="Inter, Helvetica, Arial, sans-serif">
+<rect width="1080" height="456" fill="#fcfcfb"/>
 <text x="72" y="28" font-size="15" font-weight="700" fill="#0b0b0b">The ISA grows; the hand-written lifter does not</text>
 <text x="72" y="46" font-size="11.5" fill="#52514e">Shaded band = instructions Remill lifts; the gap above it = the rest of the ISA. One point per year, the last release each vendor published, measured against the Remill of that year.</text>
 <rect x="72" y="96" width="400" height="250" fill="#fcfcfb"/>
@@ -15,41 +15,45 @@
 <text x="64" y="157.5" text-anchor="end" font-size="11" fill="#52514e">8,000</text>
 <line x1="72" y1="105.3" x2="472" y2="105.3" stroke="#e4e3df" stroke-width="1"/>
 <text x="64" y="109.3" text-anchor="end" font-size="11" fill="#52514e">10,000</text>
-<line x1="89.2" y1="346" x2="89.2" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="89.2" y="364" text-anchor="middle" font-size="11" fill="#52514e">2020</text>
-<line x1="158.2" y1="346" x2="158.2" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="158.2" y="364" text-anchor="middle" font-size="11" fill="#52514e">2021</text>
-<line x1="227.2" y1="346" x2="227.2" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="227.2" y="364" text-anchor="middle" font-size="11" fill="#52514e">2022</text>
-<line x1="296.1" y1="346" x2="296.1" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="296.1" y="364" text-anchor="middle" font-size="11" fill="#52514e">2023</text>
-<line x1="365.1" y1="346" x2="365.1" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="365.1" y="364" text-anchor="middle" font-size="11" fill="#52514e">2024</text>
-<line x1="434.1" y1="346" x2="434.1" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="434.1" y="364" text-anchor="middle" font-size="11" fill="#52514e">2025</text>
+<line x1="86.7" y1="346" x2="86.7" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="86.7" y="364" text-anchor="middle" font-size="11" fill="#52514e">2019</text>
+<line x1="145.5" y1="346" x2="145.5" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="145.5" y="364" text-anchor="middle" font-size="11" fill="#52514e">2020</text>
+<line x1="204.4" y1="346" x2="204.4" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="204.4" y="364" text-anchor="middle" font-size="11" fill="#52514e">2021</text>
+<line x1="263.2" y1="346" x2="263.2" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="263.2" y="364" text-anchor="middle" font-size="11" fill="#52514e">2022</text>
+<line x1="322.0" y1="346" x2="322.0" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="322.0" y="364" text-anchor="middle" font-size="11" fill="#52514e">2023</text>
+<line x1="380.8" y1="346" x2="380.8" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="380.8" y="364" text-anchor="middle" font-size="11" fill="#52514e">2024</text>
+<line x1="439.6" y1="346" x2="439.6" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="439.6" y="364" text-anchor="middle" font-size="11" fill="#52514e">2025</text>
 <line x1="72" y1="346" x2="472" y2="346" stroke="#b9b8b2" stroke-width="1"/>
 <text x="72" y="70" font-size="13" font-weight="600" fill="#0b0b0b">x86-64 — Intel XED iforms</text>
 <text x="24" y="221.0" font-size="11" fill="#52514e" text-anchor="middle" transform="rotate(-90 24 221.0)">instructions</text>
-<path d="M89.2,302.7 L158.2,302.7 L227.2,302.2 L296.1,302.3 L365.1,302.3 L434.1,297.8 L434.1,346.0 L89.2,346.0 Z" fill="#eb6834" fill-opacity="0.20" stroke="none"/>
-<path d="M89.2,192.0 L158.2,180.8 L227.2,178.5 L296.1,151.7 L365.1,130.5 L434.1,132.7" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="89.2" cy="192.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="158.2" cy="180.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="227.2" cy="178.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="296.1" cy="151.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="365.1" cy="130.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="434.1" cy="132.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<path d="M89.2,302.7 L158.2,302.7 L227.2,302.2 L296.1,302.3 L365.1,302.3 L434.1,297.8" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="89.2" cy="302.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="158.2" cy="302.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="227.2" cy="302.2" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="296.1" cy="302.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="365.1" cy="302.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="434.1" cy="297.8" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<text x="443.1" y="136.7" font-size="11" font-weight="600" fill="#0b0b0b">8,863</text>
-<text x="443.1" y="301.8" font-size="11" font-weight="600" fill="#0b0b0b">2,003</text>
-<text x="95.2" y="330.5" text-anchor="start" font-size="11.5" font-weight="600" fill="#0b0b0b">28.1%</text>
-<text x="428.1" y="328.3" text-anchor="end" font-size="11.5" font-weight="600" fill="#0b0b0b">22.6%</text>
-<text x="365.1" y="216.4" text-anchor="middle" font-size="11" fill="#52514e">not lifted</text>
+<path d="M86.7,303.8 L145.5,302.7 L204.4,302.7 L263.2,302.2 L322.0,302.3 L380.8,302.3 L439.6,297.8 L439.6,346.0 L86.7,346.0 Z" fill="#eb6834" fill-opacity="0.20" stroke="none"/>
+<path d="M86.7,193.4 L145.5,192.0 L204.4,180.8 L263.2,178.5 L322.0,151.7 L380.8,130.5 L439.6,132.7" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="86.7" cy="193.4" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="145.5" cy="192.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="204.4" cy="180.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="263.2" cy="178.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="322.0" cy="151.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="380.8" cy="130.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="439.6" cy="132.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<path d="M86.7,303.8 L145.5,302.7 L204.4,302.7 L263.2,302.2 L322.0,302.3 L380.8,302.3 L439.6,297.8" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="86.7" cy="303.8" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="145.5" cy="302.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="204.4" cy="302.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="263.2" cy="302.2" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="322.0" cy="302.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="380.8" cy="302.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="439.6" cy="297.8" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<text x="448.6" y="136.7" font-size="11" font-weight="600" fill="#0b0b0b">8,863</text>
+<text x="448.6" y="301.8" font-size="11" font-weight="600" fill="#0b0b0b">2,003</text>
+<text x="92.7" y="331.0" text-anchor="start" font-size="11.5" font-weight="600" fill="#0b0b0b">27.6%</text>
+<text x="433.6" y="328.3" text-anchor="end" font-size="11.5" font-weight="600" fill="#0b0b0b">22.6%</text>
+<text x="380.8" y="216.4" text-anchor="middle" font-size="11" fill="#52514e">not lifted</text>
 <rect x="562" y="96" width="400" height="250" fill="#fcfcfb"/>
 <line x1="562" y1="346.0" x2="962" y2="346.0" stroke="#e4e3df" stroke-width="1"/>
 <text x="554" y="350.0" text-anchor="end" font-size="11" fill="#52514e">0</text>
@@ -63,46 +67,53 @@
 <text x="554" y="151.0" text-anchor="end" font-size="11" fill="#52514e">4,000</text>
 <line x1="562" y1="97.2" x2="962" y2="97.2" stroke="#e4e3df" stroke-width="1"/>
 <text x="554" y="101.2" text-anchor="end" font-size="11" fill="#52514e">5,000</text>
-<line x1="579.2" y1="346" x2="579.2" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="579.2" y="364" text-anchor="middle" font-size="11" fill="#52514e">2020</text>
-<line x1="648.2" y1="346" x2="648.2" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="648.2" y="364" text-anchor="middle" font-size="11" fill="#52514e">2021</text>
-<line x1="717.2" y1="346" x2="717.2" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="717.2" y="364" text-anchor="middle" font-size="11" fill="#52514e">2022</text>
-<line x1="786.1" y1="346" x2="786.1" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="786.1" y="364" text-anchor="middle" font-size="11" fill="#52514e">2023</text>
-<line x1="855.1" y1="346" x2="855.1" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="855.1" y="364" text-anchor="middle" font-size="11" fill="#52514e">2024</text>
-<line x1="924.1" y1="346" x2="924.1" y2="350" stroke="#b9b8b2" stroke-width="1"/>
-<text x="924.1" y="364" text-anchor="middle" font-size="11" fill="#52514e">2025</text>
+<line x1="576.7" y1="346" x2="576.7" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="576.7" y="364" text-anchor="middle" font-size="11" fill="#52514e">2019</text>
+<line x1="635.5" y1="346" x2="635.5" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="635.5" y="364" text-anchor="middle" font-size="11" fill="#52514e">2020</text>
+<line x1="694.4" y1="346" x2="694.4" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="694.4" y="364" text-anchor="middle" font-size="11" fill="#52514e">2021</text>
+<line x1="753.2" y1="346" x2="753.2" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="753.2" y="364" text-anchor="middle" font-size="11" fill="#52514e">2022</text>
+<line x1="812.0" y1="346" x2="812.0" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="812.0" y="364" text-anchor="middle" font-size="11" fill="#52514e">2023</text>
+<line x1="870.8" y1="346" x2="870.8" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="870.8" y="364" text-anchor="middle" font-size="11" fill="#52514e">2024</text>
+<line x1="929.6" y1="346" x2="929.6" y2="350" stroke="#b9b8b2" stroke-width="1"/>
+<text x="929.6" y="364" text-anchor="middle" font-size="11" fill="#52514e">2025</text>
 <line x1="562" y1="346" x2="962" y2="346" stroke="#b9b8b2" stroke-width="1"/>
 <text x="562" y="70" font-size="13" font-weight="600" fill="#0b0b0b">A64 — ARM ASL encodings</text>
 <text x="514" y="221.0" font-size="11" fill="#52514e" text-anchor="middle" transform="rotate(-90 514 221.0)">instructions</text>
-<path d="M579.2,327.1 L648.2,327.1 L717.2,327.1 L786.1,327.1 L855.1,327.1 L924.1,327.1 L924.1,346.0 L579.2,346.0 Z" fill="#eb6834" fill-opacity="0.20" stroke="none"/>
-<path d="M579.2,229.4 L648.2,223.5 L717.2,166.2 L786.1,158.8 L855.1,132.2 L924.1,130.5" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="579.2" cy="229.4" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="648.2" cy="223.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="717.2" cy="166.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="786.1" cy="158.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="855.1" cy="132.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="924.1" cy="130.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<path d="M579.2,327.1 L648.2,327.1 L717.2,327.1 L786.1,327.1 L855.1,327.1 L924.1,327.1" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="579.2" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="648.2" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="717.2" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="786.1" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="855.1" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="924.1" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<text x="933.1" y="134.5" font-size="11" font-weight="600" fill="#0b0b0b">4,331</text>
-<text x="933.1" y="331.1" font-size="11" font-weight="600" fill="#0b0b0b">380</text>
-<text x="585.2" y="318.1" text-anchor="start" font-size="11.5" font-weight="600" fill="#0b0b0b">16.2%</text>
-<text x="918.1" y="318.1" text-anchor="end" font-size="11.5" font-weight="600" fill="#0b0b0b">8.8%</text>
-<text x="924.1" y="228.8" text-anchor="middle" font-size="11" fill="#52514e">not lifted</text>
+<path d="M576.7,327.1 L635.5,327.1 L694.4,327.1 L753.2,327.1 L812.0,327.1 L870.8,327.1 L929.6,327.1 L929.6,346.0 L576.7,346.0 Z" fill="#eb6834" fill-opacity="0.20" stroke="none"/>
+<path d="M576.7,229.8 L635.5,229.4 L694.4,223.5 L753.2,166.2 L812.0,158.8 L870.8,132.2 L929.6,130.5" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="576.7" cy="229.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="635.5" cy="229.4" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="694.4" cy="223.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="753.2" cy="166.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="812.0" cy="158.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="870.8" cy="132.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="929.6" cy="130.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<path d="M576.7,327.1 L635.5,327.1 L694.4,327.1 L753.2,327.1 L812.0,327.1 L870.8,327.1 L929.6,327.1" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="576.7" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="635.5" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="694.4" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="753.2" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="812.0" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="870.8" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="929.6" cy="327.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<text x="938.6" y="134.5" font-size="11" font-weight="600" fill="#0b0b0b">4,331</text>
+<text x="938.6" y="331.1" font-size="11" font-weight="600" fill="#0b0b0b">380</text>
+<text x="582.7" y="318.1" text-anchor="start" font-size="11.5" font-weight="600" fill="#0b0b0b">16.3%</text>
+<text x="923.6" y="318.1" text-anchor="end" font-size="11.5" font-weight="600" fill="#0b0b0b">8.8%</text>
+<text x="929.6" y="228.8" text-anchor="middle" font-size="11" fill="#52514e">not lifted</text>
 <g font-size="11.5" fill="#52514e">
-<line x1="72" y1="396" x2="94" y2="396" stroke="#2a78d6" stroke-width="2"/>
-<circle cx="83" cy="396" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<text x="102" y="400" fill="#52514e">ISA size (vendor specification)</text>
-<line x1="332" y1="396" x2="354" y2="396" stroke="#eb6834" stroke-width="2"/>
-<circle cx="343" cy="396" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<text x="362" y="400" fill="#52514e">lifted by Remill</text>
-</g></svg>
+<line x1="72" y1="400" x2="94" y2="400" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="83" cy="400" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<text x="102" y="404" fill="#52514e">ISA size (vendor specification)</text>
+<line x1="332" y1="400" x2="354" y2="400" stroke="#eb6834" stroke-width="2"/>
+<circle cx="343" cy="400" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<text x="362" y="404" fill="#52514e">lifted by Remill</text>
+</g>
+<text x="72" y="430" font-size="10.5" fill="#52514e">The series starts in 2019 because that is where the data starts: ARM first published a machine-readable specification in 2017-04 (Armv8.2-A),</text>
+<text x="72" y="444" font-size="10.5" fill="#52514e">and its 2017-04 to 2019-09 releases are no longer served, so 2019-12 is the earliest obtainable A64 release. Nothing earlier exists to measure.</text>
+</svg>
