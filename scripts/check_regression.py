@@ -104,12 +104,17 @@ def main() -> int:
             check(f"Intel xed_iform_enum @{label} ({manifest[label]['xed_version']})",
                   len(count_xed.load_enum_iforms(label)), want)
 
+    # Coverage is pinned from the series file, because the primary pairing is
+    # CONTEMPORANEOUS (the Remill of that year) and rebuilding it here would mean
+    # duplicating the worktree machinery.  The fixed-at-latest secondary is pinned
+    # directly, since it only needs the checked-out Remill.
     if manifest:
         runtime = REPO / "external/remill/lib/Arch/X86/Runtime/Instructions.cpp"
         for label, want in (("2020", 2027), ("2025", 2040)):
             if label in manifest:
                 s_ = cov_x86.coverage_against(count_xed.load_enum_iforms(label), runtime)
-                check(f"Remill covers Intel x86 @{label}", s_["supported_iforms"], want)
+                check(f"Remill (fixed at latest) covers Intel x86 @{label}",
+                      s_["supported_iforms"], want)
 
     # --- A64 unit reconciliation (the paper quotes both 4,331 and 1,143) --------
     recon = importlib.import_module("a64_unit_reconciliation")
@@ -132,7 +137,12 @@ def main() -> int:
         if intel:
             check("series: intel x86 latest ISA size", int(intel[-1]["isa_instruction_count"]), 9002)
         check("series: x86-64 latest ISA size", int(x86[-1]["isa_instruction_count"]), 8465)
-        check("series: x86-64 latest covered", int(x86[-1]["remill_covered_count"]), 1919)
+        # The paper's originally published 1,919 was fixed-at-latest Remill against the
+        # export; it is preserved in the *_fixed column now that contemporaneous is primary.
+        check("series: x86-64 export latest covered (fixed at latest)",
+              int(x86[-1]["remill_covered_fixed"]), 1919)
+        check("series: x86-64 export latest covered (contemporaneous)",
+              int(x86[-1]["remill_covered_count"]), 1702)
         check("series: a64 first ISA size (2019-12)", int(a64[0]["isa_instruction_count"]), 2336)
         anchor = [r for r in x86 if r["spec_ref"] == count_xed.MARCH_2020_COMMIT[:12]]
         check("series: 2020-03 x86 anchor present with 6135",
@@ -152,6 +162,29 @@ def main() -> int:
               years.get(("arm-mra", "a64")), list(range(2020, 2026)))
         check("annual grid: xed-to-xml export is missing 2023 (not interpolated)",
               2023 not in years.get(("xed-to-xml-export", "x86-64"), []), True)
+
+        # the PRIMARY (contemporaneous) numbers the paper table quotes
+        idx = {(r["source"], int(r["year"])): r for r in arows}
+        for key, want_isa, want_cov, want_pct in (
+            (("intel-xed-enum", 2020), 6398, 1800, "28.13"),
+            (("intel-xed-enum", 2025), 8863, 2003, "22.6"),
+            (("arm-mra", 2020), 2343, 380, "16.22"),
+            (("arm-mra", 2025), 4331, 380, "8.77"),
+        ):
+            r = idx.get(key)
+            if r is not None:
+                check(f"annual {key[0]} {key[1]} (contemporaneous)",
+                      (int(r["isa_instruction_count"]), int(r["remill_covered_count"]),
+                       r["coverage_pct"]),
+                      (want_isa, want_cov, want_pct))
+
+        # A64 flatness must be a MEASURED result of contemporaneous pairing, not an
+        # artefact of holding Remill fixed: distinct dated commits, same answer.
+        a64_rows = [r for r in rows if r["isa"] == "a64"]
+        check("A64 contemporaneous: many distinct dated Remill commits",
+              len({r["remill_ref"] for r in a64_rows}) >= 20, True)
+        check("A64 contemporaneous: every one covers exactly 380",
+              {r["remill_covered_count"] for r in a64_rows}, {"380"})
 
     print()
     if failures:

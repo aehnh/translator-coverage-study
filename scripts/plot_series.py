@@ -8,6 +8,12 @@ lifts.  The band is what a hand-written lifter covers, the widening gap above it
 is what it does not, and the coverage percentage is the ratio of the two - so
 counts and percentages appear in one plot without a second y-axis.
 
+Remill is CONTEMPORANEOUS: each year's ISA is measured against the newest Remill
+commit that existed when the vendor published that release, so the band shows the
+lifter actually developing rather than today's Remill projected backwards.  The
+fixed-at-latest variant stays in data/ in the *_fixed columns as a sensitivity
+check; it is not plotted.
+
 Sampling rule, applied identically to both ISAs: one point per calendar year,
 2020-2025, taking the last release the vendor published in that year.  Full
 density stays in data/series.csv; nothing is interpolated, so a year with no
@@ -157,7 +163,7 @@ def main() -> int:
            f'The ISA grows; the hand-written lifter does not</text>',
            f'<text x="72" y="46" font-size="11.5" fill="{INK_2}">'
            f'Shaded band = instructions Remill lifts; the gap above it = the rest of the ISA. '
-           f'One point per year, the last release each vendor published. Remill fixed at latest.</text>']
+           f'One point per year, the last release each vendor published, measured against the Remill of that year.</text>']
 
     for k, isa in enumerate(isas):
         rs = sorted((r for r in rows if r["isa"] == isa), key=lambda r: r["y"])

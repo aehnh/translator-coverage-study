@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="422" viewBox="0 0 1080 422" font-family="Inter, Helvetica, Arial, sans-serif">
 <rect width="1080" height="422" fill="#fcfcfb"/>
 <text x="72" y="28" font-size="15" font-weight="700" fill="#0b0b0b">The ISA grows; the hand-written lifter does not</text>
-<text x="72" y="46" font-size="11.5" fill="#52514e">Shaded band = instructions Remill lifts; the gap above it = the rest of the ISA. One point per year, the last release each vendor published. Remill fixed at latest.</text>
+<text x="72" y="46" font-size="11.5" fill="#52514e">Shaded band = instructions Remill lifts; the gap above it = the rest of the ISA. One point per year, the last release each vendor published, measured against the Remill of that year.</text>
 <rect x="72" y="96" width="400" height="250" fill="#fcfcfb"/>
 <line x1="72" y1="346.0" x2="472" y2="346.0" stroke="#e4e3df" stroke-width="1"/>
 <text x="64" y="350.0" text-anchor="end" font-size="11" fill="#52514e">0</text>
@@ -30,7 +30,7 @@
 <line x1="72" y1="346" x2="472" y2="346" stroke="#b9b8b2" stroke-width="1"/>
 <text x="72" y="70" font-size="13" font-weight="600" fill="#0b0b0b">x86-64 — Intel XED iforms</text>
 <text x="24" y="221.0" font-size="11" fill="#52514e" text-anchor="middle" transform="rotate(-90 24 221.0)">instructions</text>
-<path d="M89.2,297.2 L158.2,297.2 L227.2,297.2 L296.1,297.1 L365.1,297.2 L434.1,296.9 L434.1,346.0 L89.2,346.0 Z" fill="#eb6834" fill-opacity="0.20" stroke="none"/>
+<path d="M89.2,302.7 L158.2,302.7 L227.2,302.2 L296.1,302.3 L365.1,302.3 L434.1,297.8 L434.1,346.0 L89.2,346.0 Z" fill="#eb6834" fill-opacity="0.20" stroke="none"/>
 <path d="M89.2,192.0 L158.2,180.8 L227.2,178.5 L296.1,151.7 L365.1,130.5 L434.1,132.7" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="89.2" cy="192.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
 <circle cx="158.2" cy="180.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
@@ -38,18 +38,18 @@
 <circle cx="296.1" cy="151.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
 <circle cx="365.1" cy="130.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
 <circle cx="434.1" cy="132.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<path d="M89.2,297.2 L158.2,297.2 L227.2,297.2 L296.1,297.1 L365.1,297.2 L434.1,296.9" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="89.2" cy="297.2" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="158.2" cy="297.2" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="227.2" cy="297.2" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="296.1" cy="297.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="365.1" cy="297.2" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="434.1" cy="296.9" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<path d="M89.2,302.7 L158.2,302.7 L227.2,302.2 L296.1,302.3 L365.1,302.3 L434.1,297.8" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="89.2" cy="302.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="158.2" cy="302.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="227.2" cy="302.2" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="296.1" cy="302.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="365.1" cy="302.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="434.1" cy="297.8" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
 <text x="443.1" y="136.7" font-size="11" font-weight="600" fill="#0b0b0b">8,863</text>
-<text x="443.1" y="300.9" font-size="11" font-weight="600" fill="#0b0b0b">2,040</text>
-<text x="95.2" y="328.0" text-anchor="start" font-size="11.5" font-weight="600" fill="#0b0b0b">31.7%</text>
-<text x="428.1" y="327.9" text-anchor="end" font-size="11.5" font-weight="600" fill="#0b0b0b">23.0%</text>
-<text x="365.1" y="213.8" text-anchor="middle" font-size="11" fill="#52514e">not lifted</text>
+<text x="443.1" y="301.8" font-size="11" font-weight="600" fill="#0b0b0b">2,003</text>
+<text x="95.2" y="330.5" text-anchor="start" font-size="11.5" font-weight="600" fill="#0b0b0b">28.1%</text>
+<text x="428.1" y="328.3" text-anchor="end" font-size="11.5" font-weight="600" fill="#0b0b0b">22.6%</text>
+<text x="365.1" y="216.4" text-anchor="middle" font-size="11" fill="#52514e">not lifted</text>
 <rect x="562" y="96" width="400" height="250" fill="#fcfcfb"/>
 <line x1="562" y1="346.0" x2="962" y2="346.0" stroke="#e4e3df" stroke-width="1"/>
 <text x="554" y="350.0" text-anchor="end" font-size="11" fill="#52514e">0</text>

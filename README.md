@@ -15,28 +15,41 @@ nix develop
 ## Headline
 
 Both ISAs are measured from the **vendor's own machine-readable specification**, and
-Remill is held **fixed at its latest checkout**, so the series isolates one variable:
-the target moved.
+each year's ISA is measured against the **Remill that existed in that year** — the
+newest Remill commit on the day the vendor published that release.  That is the
+pairing the claim needs: it lets Remill visibly do development while the ISA outruns
+it.  (Holding Remill fixed at its latest checkout instead would draw today's lifter
+against every past year and hide exactly that; it is kept as a sensitivity check in
+the `*_fixed` columns of `data/`.)
 
 Presentation grid - **one point per calendar year, 2020-2025, taking the last release
 the vendor published in that year** (the same rule for both ISAs):
 
 | year | x86-64 iforms | Remill | coverage | A64 encodings | Remill | coverage |
 |---|---|---|---|---|---|---|
-| 2020 | 6398 | 2027 | 31.68% | 2343 | 380 | 16.22% |
-| 2021 | 6866 | 2029 | 29.55% | 2462 | 380 | 15.43% |
-| 2022 | 6958 | 2027 | 29.13% | 3613 | 380 | 10.52% |
-| 2023 | 8074 | 2030 | 25.14% | 3762 | 380 | 10.10% |
-| 2024 | 8955 | 2029 | 22.66% | 4296 | 380 | 8.85% |
-| 2025 | 8863 | 2040 | 23.02% | 4331 | 380 | 8.77% |
+| 2020 | 6398 | 1800 | 28.13% | 2343 | 380 | 16.22% |
+| 2021 | 6866 | 1798 | 26.19% | 2462 | 380 | 15.43% |
+| 2022 | 6958 | 1818 | 26.13% | 3613 | 380 | 10.52% |
+| 2023 | 8074 | 1817 | 22.50% | 3762 | 380 | 10.10% |
+| 2024 | 8955 | 1816 | 20.28% | 4296 | 380 | 8.85% |
+| 2025 | 8863 | 2003 | 22.60% | 4331 | 380 | 8.77% |
 
-The covered-instruction count is a flat line in both cases while the ISA grows
-underneath it, so coverage falls purely because the denominator moves: x86-64
-31.68% -> 23.02% and A64 16.22% -> 8.77% over the same six years.
+Over six years the x86-64 ISA grew **6398 -> 8863 (+39%)** while Remill went
+**1800 -> 2003 (+11%)**: the lifter really is being worked on, and still loses ground,
+28.13% -> 22.60%.  On A64 it does not move at all - **380 at every one of the six
+points** - while the ISA nearly doubles, 2343 -> 4331, so coverage almost halves,
+16.22% -> 8.77%.
+
+That A64 flatness is a *measured* result of the contemporaneous pairing, not an
+artefact of the convention: the 25 A64 points are paired with **24 distinct dated
+Remill commits** and every one of them covers exactly 380, because Remill's AArch64
+`DEF_ISEL` set has been frozen at **682 names since mid-2018** (verified identical at
+the 2019-11-29 and 2026-03-26 anchors).
 
 Figure: `figures/coverage_series.svg` (LaTeX table: `figures/coverage_series.tex`).
 Data: `data/series_annual.csv` (presentation grid) and `data/series.csv` (full
-density - every measured point, nothing discarded).
+density - every measured point, nothing discarded).  Both carry the fixed-at-latest
+sensitivity check alongside, in the `*_fixed` columns.
 
 ## Reproducing
 
@@ -90,6 +103,11 @@ and 8 dated Intel XED anchors, with a `source` column distinguishing `arm-mra`,
 `intel-xed-enum` and `xed-to-xml-export`.  Sampling is per release boundary, not on a
 calendar grid, because ISA growth is a step function: the count is constant between
 releases and jumps at one.  `is_change_point` marks rows where the count changed.
+
+Every row carries both Remill pairings: `remill_covered_count` / `coverage_pct` are
+the **contemporaneous** primary (with `remill_ref` / `remill_date` naming the exact
+commit used, so the pairing is auditable), and `remill_covered_fixed` /
+`coverage_pct_fixed` the fixed-at-latest secondary.
 
 `data/series_annual.csv` is the **presentation** downsample used by the figure and the
 paper table: one point per calendar year, 2020-2025, taking the last release the
@@ -146,22 +164,24 @@ The normalisation tables are in the two `calculate_remill_*_coverage.py` scripts
 
 ## Remill: fixed or contemporaneous?
 
-`data/series.csv` holds Remill fixed at the latest commit.
-`data/series_remill_contemporaneous.csv` instead uses, for each date, the newest Remill
-commit that existed then.  Both are provided; the fixed one is the headline because:
+Every row of `data/series.csv` carries both: `remill_covered_count` pairs each release
+with the newest Remill commit that existed when the vendor published it
+(**contemporaneous**, the primary), and `remill_covered_fixed` pairs every release with
+the latest Remill checkout (**fixed**, the sensitivity check).  Contemporaneous is the
+headline because it is the pairing the claim needs - it shows the lifter developing and
+still losing ground.  Notes on the difference:
 
 * **For A64 the choice is a no-op.**  Remill's AArch64 `DEF_ISEL` set has been
   **byte-identical since mid-2018** - 682 names, and the 2020 and 2026 checkouts differ
-  by zero entries.  The two A64 series are therefore numerically identical.
-* **For A64 the two series are identical point for point** even though the
+  by zero entries.  Both pairings give 380 at every point.
+* **For A64 the two pairings are identical point for point** even though the
   contemporaneous run really does use 24 distinct dated Remill commits across the 25
   points: every one of them covers exactly 380 encodings.
-* **For x86 it only moves the level, not the trend.**  Against the Intel measure,
-  contemporaneous Remill covers 1800 iforms in 2020 rising to 2003 in 2025 (vs.
-  2027 -> 2040 fixed); coverage still falls, 28.13% -> 22.60%.  Fixing Remill at its
-  latest is the *charitable* choice: it credits the lifter with work it had not yet
-  done at the earlier dates.  `data/series_annual_remill_contemporaneous.csv` carries
-  the annual grid for that variant.
+* **For x86 the fixed variant only raises the level.**  Against the Intel measure it
+  reads 2027 in 2020 and 2040 in 2025 (vs. the primary 1800 -> 2003), i.e. it credits
+  the lifter in 2020 with work it did not do until 2025 and so flattens the very
+  development the figure is about.  Both are in `data/`; the `*_fixed` columns hold
+  the fixed variant.
 
 ## Known gaps and caveats
 
