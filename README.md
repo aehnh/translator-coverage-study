@@ -101,13 +101,18 @@ Read these before quoting a number.
    both `arch8.6` and `arch9.7`.  The 380 values are what `check_regression.py`
    asserts.  Every other originally published number (6135, 8465, 2336, 4331, 1635,
    1919) reproduces exactly.
-2. **A64 stops at 2023-12.**  ARM's releases from 2024-03 onward are no longer served
-   from either historical download path
-   (`.../armv8-a-architecture/<date>/...` or `.../armv9-a-architecture/<date>/...`);
-   both return 404, and the current developer.arm.com download pages serve only a
-   redirect stub to automated fetchers.  Nothing before 2019-12 is retrievable either:
-   ARM's first machine-readable release predates that, but those tarballs are gone from
-   the CDN.
+2. **A64 runs 2019-12 to 2023-12 and no further in either direction.**
+   ARM published the first machine-readable architecture specification on
+   **2017-04-20**, for Armv8.2-A, so no A64 point earlier than that can exist at all -
+   2016 is impossible in principle, not just in practice.  The 2017-04 to 2019-09
+   releases did exist but their tarballs are no longer served: probing
+   `.../armv8-a-architecture/<date>/{A64_ISA_xml,ISA_A64_xml}_{v82A..v89A,A_profile}-<date>.tar.gz`
+   across every quarter from 2017-04 returns 404 until 2019-12.  At the other end,
+   releases from 2024-03 onward are gone from both historical paths
+   (`.../armv8-a-architecture/...` and `.../armv9-a-architecture/...`), and the current
+   developer.arm.com download pages serve only a redirect stub to automated fetchers.
+   (`developer.arm.com/documentation/ddi0602/<date>/` is not usable as a release index:
+   it returns HTTP 200 for any string, including `notadate`.)
 3. **`external/arch9.7` is undated.**  It is a real, newer ARM release (4331
    encodings) but we could not obtain the matching tarball, so it is not placed on the
    time axis.  Its feature set (`FEAT_CMPBR`, `FEAT_LSFE`, `FEAT_FPRCVT`, `FEAT_SVE2p2`,
